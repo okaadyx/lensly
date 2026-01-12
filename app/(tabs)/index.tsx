@@ -1,98 +1,135 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import SearchComponent from "@/components/header/SearchComponent";
+import ImageViewer from "@/components/modal/ImageViewer";
+import { api } from "@/services";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  const isSearching = !!searchQuery.trim();
+
+  const feedQuery = useInfiniteQuery({
+    queryKey: ["images"],
+    queryFn: ({ pageParam = 1 }) => api.image.fetchImages(pageParam),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, pages) => {
+      if (!lastPage || lastPage.length === 0) return undefined;
+      return pages.length + 1;
+    },
+  });
+
+  const searchQueryResult = useInfiniteQuery({
+    queryKey: ["searchImages", searchQuery],
+    queryFn: ({ pageParam = 1 }) =>
+      api.image.searchImages(searchQuery, pageParam),
+    initialPageParam: 1,
+    enabled: !!searchQuery.trim(),
+    getNextPageParam: (lastPage, pages) => {
+      if (!lastPage || lastPage.length === 0) return undefined;
+      return pages.length + 1;
+    },
+  });
+
+  const feedData = feedQuery.data?.pages.flat() ?? [];
+
+  const searchData = searchQueryResult.data?.pages.flat() ?? [];
+
+  const listData = isSearching ? searchData : feedData;
+
+  const loadMore = () => {
+    if (isSearching) {
+      if (searchQueryResult.hasNextPage) {
+        searchQueryResult.fetchNextPage();
+      }
+    } else {
+      if (feedQuery.hasNextPage) {
+        feedQuery.fetchNextPage();
+      }
+    }
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ gap: 10 }}>
+        <SearchComponent
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          handleSearchQuery={setSearchQuery}
+        />
+
+        {isSearching &&
+        !searchQueryResult.isFetching &&
+        searchData.length === 0 ? (
+          <View style={{ flex: 1, alignItems: "center", marginTop: 40 }}>
+            <Text style={{ color: "red", fontSize: 20 }}>No Image Found</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={listData}
+            numColumns={2}
+            keyExtractor={(item) => item.id.toString()}
+            contentContainerStyle={{ gap: 10, paddingBottom: 20 }}
+            columnWrapperStyle={{ justifyContent: "space-between" }}
+            onEndReached={loadMore}
+            onEndReachedThreshold={0.3}
+            refreshing={feedQuery.isRefetching}
+            onRefresh={() => {
+              feedQuery.refetch();
+              setSearchQuery("");
+            }}
+            ListFooterComponent={
+              feedQuery.isFetchingNextPage ||
+              searchQueryResult.isFetchingNextPage ? (
+                <ActivityIndicator size="large" />
+              ) : null
+            }
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => {
+                  setIsVisible(true);
+                  setImageUrl(item.largeImageURL);
+                }}
+              >
+                <Image
+                  source={{ uri: item.largeImageURL }}
+                  style={styles.image}
+                />
+              </TouchableOpacity>
+            )}
+          />
+        )}
+
+        <ImageViewer
+          isVisible={isVisible}
+          setIsVisible={setIsVisible}
+          url={imageUrl}
+          onDownload={() => console.log("Download")}
+          onShare={() => console.log("Share")}
+          onSetWallpaper={() => console.log("Set Wallpaper")}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  image: {
+    height: 190,
+    width: 190,
+    borderRadius: 12,
+    marginHorizontal: 5,
   },
 });
