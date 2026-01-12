@@ -1,3 +1,4 @@
+import CategoryComponent from "@/components/CategoryComponent";
 import SearchComponent from "@/components/header/SearchComponent";
 import ImageViewer from "@/components/modal/ImageViewer";
 import { api } from "@/services";
@@ -70,7 +71,7 @@ export default function HomeScreen() {
           setSearchQuery={setSearchQuery}
           handleSearchQuery={setSearchQuery}
         />
-
+        <CategoryComponent />
         {isSearching && searchData.length === 0 ? (
           <View style={{ flex: 1, alignItems: "center", marginTop: 40 }}>
             <Text style={{ color: "red", fontSize: 20 }}>No Image Found</Text>

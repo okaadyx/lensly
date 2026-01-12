@@ -34,4 +34,23 @@ export default class ImageApi {
 
     return data.hits as any[];
   }
+  async fetchImagesFromCategory(
+    category: string,
+    page: number = 1,
+    perPage: number = 10
+  ) {
+    const { data } = await this.client.get("/", {
+      params: {
+        key: "45725306-f91a00a573a2608e69442bf61",
+        category: category,
+        image_type: "photo",
+        per_page: perPage,
+        safesearch: true,
+        editors_choice: true,
+        page,
+      },
+    });
+
+    return data.hits as any[];
+  }
 }
