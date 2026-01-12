@@ -1,50 +1,60 @@
-# Welcome to your Expo app 👋
+# Quick-Pic: A Mobile Image Explorer
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Quick-Pic is a mobile application built with React Native and Expo, designed for browsing and exploring images. It provides a simple and intuitive interface for users to view a collection of images, with features for searching and viewing high-resolution images.
 
-## Get started
+## Features
 
-1. Install dependencies
+*   **Image Gallery:** Browse a gallery of images in a clean and organized layout.
+*   **Image Search:** Search for specific images.
+*   **High-Resolution Viewer:** View images in a high-resolution modal view.
+*   **Cross-Platform:** Runs on Android, iOS, and the web.
 
-   ```bash
-   npm install
-   ```
+## Getting Started
 
-2. Start the app
+To get started with Quick-Pic, follow these steps:
 
-   ```bash
-   npx expo start
-   ```
+1.  **Install Dependencies:**
+    ```bash
+    npm install
+    ```
 
-In the output, you'll find options to open the app in a
+2.  **Start the Application:**
+    ```bash
+    npx expo start
+    ```
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+    This will open the Expo developer tools in your browser. You can then choose to run the app on an Android emulator, iOS simulator, or on a physical device using the Expo Go app.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Available Scripts
 
-## Get a fresh project
+In the project directory, you can run the following commands:
 
-When you're ready, run:
+*   `npm start`: Starts the Expo development server.
+*   `npm run android`: Starts the app on a connected Android device or emulator.
+*   `npm run ios`: Starts the app on the iOS simulator.
+*   `npm run web`: Starts the app in a web browser.
+*   `npm run lint`: Lints the project files using ESLint.
+*   `npm run reset-project`: Resets the project to a blank state.
 
-```bash
-npm run reset-project
-```
+## Technologies Used
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+*   **React Native:** A framework for building native apps using React.
+*   **Expo:** A platform for making universal React applications.
+*   **Expo Router:** A file-based routing system for React Native and web apps.
+*   **React Query:** For data fetching and caching.
+*   **Axios:** A promise-based HTTP client for the browser and Node.js.
+*   **TypeScript:** A typed superset of JavaScript.
 
-## Learn more
+## Project Structure
 
-To learn more about developing your project with Expo, look at the following resources:
+The project is organized as follows:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+*   `app/`: Contains the screens and navigation logic for the app, using file-based routing.
+*   `assets/`: Contains static assets like images and fonts.
+*   `components/`: Contains reusable UI components.
+*   `constants/`: Contains constants such as theme colors.
+*   `hooks/`: Contains custom React hooks.
+*   `lib/`: Contains library configurations, such as the React Query client.
+*   `services/`: Contains services for interacting with external APIs.
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Feel free to explore the code and contribute to the project!
