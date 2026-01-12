@@ -36,6 +36,7 @@ export default function HomeScreen() {
     queryFn: ({ pageParam = 1 }) =>
       api.image.searchImages(searchQuery, pageParam),
     initialPageParam: 1,
+    // placeholderData: undefined,
     enabled: !!searchQuery.trim(),
     getNextPageParam: (lastPage, pages) => {
       if (!lastPage || lastPage.length === 0) return undefined;
@@ -70,9 +71,7 @@ export default function HomeScreen() {
           handleSearchQuery={setSearchQuery}
         />
 
-        {isSearching &&
-        !searchQueryResult.isFetching &&
-        searchData.length === 0 ? (
+        {isSearching && searchData.length === 0 ? (
           <View style={{ flex: 1, alignItems: "center", marginTop: 40 }}>
             <Text style={{ color: "red", fontSize: 20 }}>No Image Found</Text>
           </View>
