@@ -1,5 +1,5 @@
 import { PIXABAY_CATEGORIES } from "@/constants/category";
-import React, { useState } from "react";
+import React from "react";
 import {
   FlatList,
   StyleSheet,
@@ -8,33 +8,37 @@ import {
   View,
 } from "react-native";
 
-const CategoryComponent = () => {
-  const [select, setSelect] = useState<string | null>(null);
+type Props = {
+  selectedCategory: string | null;
+  onSelectCategory: (id: string) => void;
+};
+
+const CategoryComponent = ({ selectedCategory, onSelectCategory }: Props) => {
   return (
     <View>
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
-        data={PIXABAY_CATEGORIES}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => setSelect(item.id)}>
-            <View
-              style={{
-                height: 40,
-                width: 100,
-                backgroundColor: item?.id === select ? "green" : "white",
-                borderRadius: 8,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
+        data={Object.values(PIXABAY_CATEGORIES)}
+        keyExtractor={(item) => item.id}
+        extraData={selectedCategory}
+        contentContainerStyle={styles.container}
+        renderItem={({ item }) => {
+          const isSelected = item.id === selectedCategory;
+
+          return (
+            <TouchableOpacity
+              onPress={() => onSelectCategory(item.id)}
+              activeOpacity={0.8}
             >
-              <Text style={{ color: item.id === select ? "white" : "black" }}>
-                {item.label}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
-        contentContainerStyle={{ gap: 10, padding: 8 }}
+              <View style={[styles.item, isSelected && styles.selectedItem]}>
+                <Text style={[styles.text, isSelected && styles.selectedText]}>
+                  {item.label}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          );
+        }}
       />
     </View>
   );
@@ -42,4 +46,27 @@ const CategoryComponent = () => {
 
 export default CategoryComponent;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    gap: 10,
+    padding: 8,
+  },
+  item: {
+    height: 40,
+    width: 100,
+    backgroundColor: "white",
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  selectedItem: {
+    backgroundColor: "green",
+  },
+  text: {
+    color: "black",
+  },
+  selectedText: {
+    color: "white",
+    fontWeight: "600",
+  },
+});

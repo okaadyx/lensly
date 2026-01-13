@@ -2,17 +2,13 @@ import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 
-interface SearchComponentProps {
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
-  handleSearchQuery: (query: string) => void;
-}
+type Props = {
+  value: string;
+  onChange: (text: string) => void;
+  onSubmit?: () => void;
+};
 
-const SearchComponent = ({
-  searchQuery,
-  handleSearchQuery,
-  setSearchQuery,
-}: SearchComponentProps) => {
+const SearchComponent = ({ value, onChange, onSubmit }: Props) => {
   return (
     <View style={styles.container}>
       <View style={styles.inputWrapper}>
@@ -22,9 +18,9 @@ const SearchComponent = ({
           style={styles.input}
           placeholder="Search here"
           placeholderTextColor="gray"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          onSubmitEditing={() => handleSearchQuery(searchQuery)}
+          value={value}
+          onChangeText={onChange} // ✅ single source
+          onSubmitEditing={onSubmit}
           returnKeyType="search"
           autoCorrect={false}
         />

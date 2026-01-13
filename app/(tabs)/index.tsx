@@ -17,6 +17,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [categoryQuery, setCategoryQuery] = useState("");
+
   const [isVisible, setIsVisible] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
@@ -37,8 +39,18 @@ export default function HomeScreen() {
     queryFn: ({ pageParam = 1 }) =>
       api.image.searchImages(searchQuery, pageParam),
     initialPageParam: 1,
-    // placeholderData: undefined,
     enabled: !!searchQuery.trim(),
+    getNextPageParam: (lastPage, pages) => {
+      if (!lastPage || lastPage.length === 0) return undefined;
+      return pages.length + 1;
+    },
+  });
+  const categoryQueryResult = useInfiniteQuery({
+    queryKey: ["categoryImages", categoryQuery],
+    queryFn: ({ pageParam = 1 }) =>
+      api.image.fetchImagesFromCategory(categoryQuery, pageParam),
+    initialPageParam: 1,
+    enabled: !!categoryQuery.trim(),
     getNextPageParam: (lastPage, pages) => {
       if (!lastPage || lastPage.length === 0) return undefined;
       return pages.length + 1;
@@ -49,17 +61,21 @@ export default function HomeScreen() {
 
   const searchData = searchQueryResult.data?.pages.flat() ?? [];
 
-  const listData = isSearching ? searchData : feedData;
+  const categoryData = categoryQueryResult.data?.pages.flat() ?? [];
+
+  const listData = searchQuery.trim()
+    ? searchData
+    : categoryQuery.trim()
+    ? categoryData
+    : feedData;
 
   const loadMore = () => {
-    if (isSearching) {
-      if (searchQueryResult.hasNextPage) {
-        searchQueryResult.fetchNextPage();
-      }
+    if (searchQuery.trim()) {
+      searchQueryResult.hasNextPage && searchQueryResult.fetchNextPage();
+    } else if (categoryQuery.trim()) {
+      categoryQueryResult.hasNextPage && categoryQueryResult.fetchNextPage();
     } else {
-      if (feedQuery.hasNextPage) {
-        feedQuery.fetchNextPage();
-      }
+      feedQuery.hasNextPage && feedQuery.fetchNextPage();
     }
   };
 
@@ -67,11 +83,24 @@ export default function HomeScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ gap: 10 }}>
         <SearchComponent
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          handleSearchQuery={setSearchQuery}
+          value={searchQuery}
+          onChange={(text) => {
+            setSearchQuery(text);
+            setCategoryQuery("");
+          }}
+          onSubmit={() => {
+            // optional: trigger analytics / manual fetch
+          }}
         />
-        <CategoryComponent />
+
+        <CategoryComponent
+          selectedCategory={categoryQuery || null}
+          onSelectCategory={(id) => {
+            setCategoryQuery(id);
+            setSearchQuery("");
+          }}
+        />
+
         {isSearching && searchData.length === 0 ? (
           <View style={{ flex: 1, alignItems: "center", marginTop: 40 }}>
             <Text style={{ color: "red", fontSize: 20 }}>No Image Found</Text>
@@ -87,12 +116,14 @@ export default function HomeScreen() {
             onEndReachedThreshold={0.3}
             refreshing={feedQuery.isRefetching}
             onRefresh={() => {
-              feedQuery.refetch();
               setSearchQuery("");
+              setCategoryQuery("");
+              feedQuery.refetch();
             }}
             ListFooterComponent={
               feedQuery.isFetchingNextPage ||
-              searchQueryResult.isFetchingNextPage ? (
+              searchQueryResult.isFetchingNextPage ||
+              categoryQueryResult.isFetchingNextPage ? (
                 <ActivityIndicator size="large" />
               ) : null
             }
