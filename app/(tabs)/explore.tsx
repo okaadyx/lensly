@@ -7,75 +7,63 @@ import {
   Text,
   TouchableOpacity,
   View,
+  useColorScheme,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AccountScreen() {
+  const scheme = useColorScheme();
+  const isDark = scheme === "dark";
+
+  const colors = {
+    background: isDark ? "#000" : "#fff",
+    text: isDark ? "#fff" : "#000",
+    subText: isDark ? "#aaa" : "#555",
+    card: isDark ? "#111" : "#cadfee",
+    accent: "#1d6ca7",
+  };
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 10,
-        }}
-      >
-        <Image
-          style={{
-            height: 120,
-            width: 120,
-            borderRadius: 60,
-          }}
-          source={{
-            uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          }}
-        />
-        <View
-          style={{
-            height: 40,
-            width: 40,
-            marginLeft: 80,
-            backgroundColor: "#1d6ca7",
-            borderRadius: 40,
-            position: "absolute",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
+      <View style={styles.profileContainer}>
+        <View>
+          <Image
+            style={styles.avatar}
+            source={{
+              uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=687&auto=format&fit=crop",
+            }}
+          />
           <TouchableOpacity
+            style={[styles.editIcon, { backgroundColor: colors.accent }]}
             onPress={() =>
               Alert.alert(
                 "Screen not implemented",
-                "wait for next update to use this feature"
+                "Wait for next update to use this feature"
               )
             }
           >
-            <Ionicons name="create" size={22} color="#ffffff" />
+            <Ionicons name="create" size={22} color="#fff" />
           </TouchableOpacity>
         </View>
-        <Text style={{ fontSize: 20, color: "white" }}>john doe</Text>
-        <View
-          style={{
-            height: 30,
-            width: "40%",
-            backgroundColor: "#cadfee",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: 12,
-          }}
-        >
-          <Text>example@gmail.com</Text>
+
+        <Text style={[styles.name, { color: colors.text }]}>John Doe</Text>
+
+        <View style={[styles.emailBadge, { backgroundColor: colors.card }]}>
+          <Text style={{ color: colors.subText }}>example@gmail.com</Text>
         </View>
       </View>
-      <View style={{ flex: 1 }}>
+
+      {/* Menu Section */}
+      <View style={styles.menuContainer}>
         <MenuItem
           icon="pencil-outline"
           label="Edit Profile"
           onPress={() =>
             Alert.alert(
               "Screen not implemented",
-              "wait for next update to use this feature"
+              "Wait for next update to use this feature"
             )
           }
         />
@@ -85,7 +73,7 @@ export default function AccountScreen() {
           onPress={() =>
             Alert.alert(
               "Screen not implemented",
-              "wait for next update to use this feature"
+              "Wait for next update to use this feature"
             )
           }
         />
@@ -95,7 +83,7 @@ export default function AccountScreen() {
           onPress={() =>
             Alert.alert(
               "Screen not implemented",
-              "wait for next update to use this feature"
+              "Wait for next update to use this feature"
             )
           }
         />
@@ -103,16 +91,43 @@ export default function AccountScreen() {
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
-  headerImage: {
-    color: "#808080",
-    bottom: -90,
-    left: -35,
-    position: "absolute",
+  container: {
+    flex: 1,
   },
-  titleContainer: {
-    flexDirection: "row",
-    gap: 8,
+  profileContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+  },
+  avatar: {
+    height: 120,
+    width: 120,
+    borderRadius: 60,
+  },
+  editIcon: {
+    position: "absolute",
+    right: -5,
+    bottom: -5,
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  name: {
+    fontSize: 20,
+    fontWeight: "600",
+  },
+  emailBadge: {
+    height: 30,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  menuContainer: {
+    flex: 1,
   },
 });
