@@ -146,10 +146,7 @@ export default function HomeScreen() {
         <ImageViewer
           isVisible={isVisible}
           setIsVisible={setIsVisible}
-          url={imageUrl}
-          onDownload={() => console.log("Download")}
-          onShare={() => console.log("Share")}
-          onSetWallpaper={() => console.log("Set Wallpaper")}
+          url={imageUrl || ""}
         />
       </View>
     </SafeAreaView>
