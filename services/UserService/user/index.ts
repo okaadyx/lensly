@@ -18,7 +18,7 @@ export default class User {
     const response = await this.client.get("/users", {
       headers,
     });
-    return response.data.user;
+    return response.data;
   }
 
   async login(data: any) {

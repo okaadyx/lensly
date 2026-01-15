@@ -1,5 +1,7 @@
 import { MenuItem } from "@/constants/menu";
+import { userApi } from "@/services/UserService";
 import { Ionicons } from "@expo/vector-icons";
+import { useQuery } from "@tanstack/react-query";
 import {
   Alert,
   Image,
@@ -14,7 +16,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function AccountScreen() {
   const scheme = useColorScheme();
   const isDark = scheme === "dark";
-
   const colors = {
     background: isDark ? "#000" : "#fff",
     text: isDark ? "#fff" : "#000",
@@ -22,6 +23,11 @@ export default function AccountScreen() {
     card: isDark ? "#111" : "#cadfee",
     accent: "#1d6ca7",
   };
+
+  const { data } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => userApi.user.getUser(),
+  });
 
   return (
     <SafeAreaView
@@ -48,10 +54,12 @@ export default function AccountScreen() {
           </TouchableOpacity>
         </View>
 
-        <Text style={[styles.name, { color: colors.text }]}>John Doe</Text>
+        <Text style={[styles.name, { color: colors.text }]}>
+          {data?.user.name}
+        </Text>
 
         <View style={[styles.emailBadge, { backgroundColor: colors.card }]}>
-          <Text style={{ color: colors.subText }}>example@gmail.com</Text>
+          <Text style={{ color: colors.subText }}>{data?.user.email}</Text>
         </View>
       </View>
 
@@ -67,9 +75,19 @@ export default function AccountScreen() {
             )
           }
         />
-        <MenuItem
+        {/* <MenuItem
           icon="lock-closed-outline"
           label="Add Pin"
+          onPress={() =>
+            Alert.alert(
+              "Screen not implemented",
+              "Wait for next update to use this feature"
+            )
+          }
+        /> */}
+        <MenuItem
+          icon="heart-outline"
+          label="Wishlist"
           onPress={() =>
             Alert.alert(
               "Screen not implemented",
@@ -104,6 +122,8 @@ const styles = StyleSheet.create({
   avatar: {
     height: 120,
     width: 120,
+    borderWidth: 2,
+    borderColor: "white",
     borderRadius: 60,
   },
   editIcon: {

@@ -1,5 +1,6 @@
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as FileSystem from "expo-file-system/legacy";
+import * as MediaLibrary from "expo-media-library";
 import * as Sharing from "expo-sharing";
 import {
   Alert,
@@ -17,7 +18,7 @@ export default function ImageViewer({
   isVisible,
   setIsVisible,
   url,
-  onDownload,
+  // onDownload,
   onSetWallpaper,
 }: any) {
   const onSharing = async () => {
@@ -34,6 +35,23 @@ export default function ImageViewer({
       console.log("Sharing error:", error);
       Alert.alert("Error", "Failed to share image");
     }
+  };
+
+  const onDownload = async () => {
+    const { status } = await MediaLibrary.requestPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert(
+        "Permission Requiered",
+        "If you want to download the image please allow permission to access library"
+      );
+      return;
+    }
+    const fileUri =
+      FileSystem.documentDirectory + `wallpaper-${Date.now()}.jpg`;
+    await FileSystem.downloadAsync(url, fileUri);
+    await MediaLibrary.saveToLibraryAsync(fileUri);
+
+    Alert.alert("Saved", "Image saved! Open gallery → Set as wallpaper");
   };
   return (
     <Modal
