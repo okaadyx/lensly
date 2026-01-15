@@ -81,7 +81,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ gap: 10 }}>
+      <View style={{ gap: 10, marginBottom: 80 }}>
         <SearchComponent
           value={searchQuery}
           onChange={(text) => {

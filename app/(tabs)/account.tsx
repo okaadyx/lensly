@@ -3,6 +3,7 @@ import { userApi } from "@/services/UserService";
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import {
+  ActivityIndicator,
   Alert,
   Image,
   StyleSheet,
@@ -24,11 +25,18 @@ export default function AccountScreen() {
     accent: "#1d6ca7",
   };
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["user"],
     queryFn: () => userApi.user.getUser(),
   });
 
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size={"large"} />
+      </View>
+    );
+  }
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
