@@ -21,6 +21,7 @@ export default function HomeScreen() {
 
   const [isVisible, setIsVisible] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageId, setImageId] = useState<string | null>(null);
 
   const isSearching = !!searchQuery.trim();
 
@@ -132,6 +133,7 @@ export default function HomeScreen() {
                 onPress={() => {
                   setIsVisible(true);
                   setImageUrl(item.largeImageURL);
+                  setImageId(item.id);
                 }}
               >
                 <Image
@@ -147,6 +149,7 @@ export default function HomeScreen() {
           isVisible={isVisible}
           setIsVisible={setIsVisible}
           url={imageUrl || ""}
+          imageId={imageId?.toString() || ""}
         />
       </View>
     </SafeAreaView>

@@ -1,3 +1,4 @@
+import { userApi } from "@/services/UserService";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as FileSystem from "expo-file-system/legacy";
 import * as IntentLauncher from "expo-intent-launcher";
@@ -24,11 +25,13 @@ type WallpaperType = "lock" | "home" | "both";
 export default function ImageViewer({
   isVisible,
   setIsVisible,
+  imageId,
   url,
 }: {
   isVisible: boolean;
   setIsVisible: (v: boolean) => void;
   url: string;
+  imageId: string;
 }) {
   const sheetRef = useRef<any>(null);
 
@@ -38,19 +41,18 @@ export default function ImageViewer({
   };
 
   const handleSetWallpaper = async (type: WallpaperType) => {
-
     if (Platform.OS !== "android") {
-      Alert.alert("Not Supported", "Wallpaper setting is only available on Android.");
+      Alert.alert(
+        "Not Supported",
+        "Wallpaper setting is only available on Android."
+      );
       return;
     }
 
     try {
-  
-      const fileUri =
-        FileSystem.cacheDirectory + `wallpaper-${Date.now()}.jpg`;
-      
-      await FileSystem.downloadAsync(url, fileUri);
+      const fileUri = FileSystem.cacheDirectory + `wallpaper-${Date.now()}.jpg`;
 
+      await FileSystem.downloadAsync(url, fileUri);
 
       const { status } = await MediaLibrary.requestPermissionsAsync();
       if (status !== "granted") {
@@ -64,7 +66,7 @@ export default function ImageViewer({
       // Convert file:// URI to content:// URI using FileSystem
       // This is required for Android 7+ to avoid FileUriExposedException
       const contentUri = await FileSystem.getContentUriAsync(fileUri);
-      
+
       // Verify we have a content:// URI
       if (!contentUri.startsWith("content://")) {
         throw new Error("Failed to get content URI");
@@ -74,7 +76,7 @@ export default function ImageViewer({
       // FLAG_GRANT_READ_URI_PERMISSION (1) | FLAG_ACTIVITY_NEW_TASK (0x10000000)
       // This grants read permission to the receiving app
       const flags = 1 | 0x10000000;
-      
+
       try {
         await IntentLauncher.startActivityAsync(
           "android.intent.action.ATTACH_DATA",
@@ -84,8 +86,6 @@ export default function ImageViewer({
             flags: flags,
           }
         );
-        
-        // The system wallpaper picker will open where user can select lock/home/both
       } catch (intentError: any) {
         console.error("Intent error:", intentError);
         Alert.alert(
@@ -96,6 +96,27 @@ export default function ImageViewer({
     } catch (error) {
       console.error("Error setting wallpaper:", error);
       Alert.alert("Error", "Failed to set wallpaper. Please try again.");
+    }
+  };
+
+  const onWishlist = async (data: any) => {
+    try {
+      const response = await userApi.wishlist.addItem(data);
+
+      if (response?.status === "success") {
+        Alert.alert(
+          "Added to wishlist",
+          "Your image successfully added to the wishlist"
+        );
+        return;
+      }
+
+      Alert.alert(
+        "Something Went Wrong",
+        "Something went wrong please try again"
+      );
+    } catch (error) {
+      Alert.alert("Error", "Unable to add item to wishlist : ");
     }
   };
 
@@ -145,7 +166,6 @@ export default function ImageViewer({
       <View style={styles.modalContainer}>
         <Pressable style={styles.overlay} onPress={closeViewer}>
           <Pressable style={styles.content}>
-          
             <View style={styles.topBar}>
               <TouchableOpacity>
                 <Ionicons name="ellipsis-vertical" size={24} color="#fff" />
@@ -156,15 +176,20 @@ export default function ImageViewer({
               </TouchableOpacity>
             </View>
 
-          
             <Image
               source={{ uri: url }}
               style={styles.image}
               resizeMode="contain"
             />
 
-         
             <View style={styles.bottomBar}>
+              <TouchableOpacity
+                style={styles.actionBtn}
+                onPress={() => onWishlist({ imageId: imageId, imageUrl: url })}
+              >
+                <MaterialIcons name="favorite" size={26} color="#fff" />
+              </TouchableOpacity>
+
               <TouchableOpacity style={styles.actionBtn} onPress={onDownload}>
                 <MaterialIcons name="file-download" size={26} color="#fff" />
               </TouchableOpacity>
@@ -187,7 +212,6 @@ export default function ImageViewer({
           </Pressable>
         </Pressable>
 
-       
         <SetWallpaperBottomSheet
           sheetRef={sheetRef}
           onSelect={handleSetWallpaper}

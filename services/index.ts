@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import ImageApi from "./images";
+
 class Api {
   axiosClient: AxiosInstance;
   image: ImageApi;

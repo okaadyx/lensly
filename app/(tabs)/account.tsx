@@ -2,6 +2,7 @@ import { MenuItem } from "@/constants/menu";
 import { userApi } from "@/services/UserService";
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
+import { router } from "expo-router";
 import {
   ActivityIndicator,
   Alert,
@@ -76,12 +77,7 @@ export default function AccountScreen() {
         <MenuItem
           icon="pencil-outline"
           label="Edit Profile"
-          onPress={() =>
-            Alert.alert(
-              "Screen not implemented",
-              "Wait for next update to use this feature"
-            )
-          }
+          onPress={() => router.push("/screens/profile")}
         />
         {/* <MenuItem
           icon="lock-closed-outline"
@@ -96,12 +92,7 @@ export default function AccountScreen() {
         <MenuItem
           icon="heart-outline"
           label="Wishlist"
-          onPress={() =>
-            Alert.alert(
-              "Screen not implemented",
-              "Wait for next update to use this feature"
-            )
-          }
+          onPress={() => router.push("/screens/wishlist")}
         />
         <MenuItem
           icon="settings-outline"
