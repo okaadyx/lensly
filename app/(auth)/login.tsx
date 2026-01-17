@@ -41,7 +41,7 @@ export default function LoginScreen() {
       const response = await userApi.user.login({ email, password });
 
       if (response?.token) {
-        router.replace("/(tabs)");
+        router.replace("/(home)");
       } else {
         Alert.alert(
           "Login Failed",

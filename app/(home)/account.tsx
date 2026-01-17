@@ -13,7 +13,6 @@ import {
   View,
   useColorScheme,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AccountScreen() {
   const scheme = useColorScheme();
@@ -39,9 +38,7 @@ export default function AccountScreen() {
     );
   }
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: colors.background }]}
-    >
+    <View style={{ flex: 1 }}>
       <View style={styles.profileContainer}>
         <View>
           <Image
@@ -72,7 +69,6 @@ export default function AccountScreen() {
         </View>
       </View>
 
-      {/* Menu Section */}
       <View style={styles.menuContainer}>
         <MenuItem
           icon="pencil-outline"
@@ -105,7 +101,7 @@ export default function AccountScreen() {
           }
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 const styles = StyleSheet.create({

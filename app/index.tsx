@@ -11,7 +11,7 @@ export default function StartupScreen() {
         const res = await userApi.user.getUser();
 
         if (res.user) {
-          router.replace("/(tabs)");
+          router.replace("/(home)");
         } else {
           await SecureStore.deleteItemAsync("token");
           router.replace("/(auth)/welcome");

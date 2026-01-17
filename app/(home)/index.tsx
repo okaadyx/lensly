@@ -1,5 +1,4 @@
 import CategoryComponent from "@/components/CategoryComponent";
-import SearchComponent from "@/components/header/SearchComponent";
 import ImageViewer from "@/components/modal/ImageViewer";
 import { api } from "@/services";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -13,7 +12,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -67,8 +65,8 @@ export default function HomeScreen() {
   const listData = searchQuery.trim()
     ? searchData
     : categoryQuery.trim()
-    ? categoryData
-    : feedData;
+      ? categoryData
+      : feedData;
 
   const loadMore = () => {
     if (searchQuery.trim()) {
@@ -81,78 +79,65 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ gap: 10, marginBottom: 80 }}>
-        <SearchComponent
-          value={searchQuery}
-          onChange={(text) => {
-            setSearchQuery(text);
-            setCategoryQuery("");
-          }}
-          onSubmit={() => {
-            // optional: trigger analytics / manual fetch
-          }}
-        />
+    <View style={{ marginBottom: 80 }}>
+      <CategoryComponent
+        selectedCategory={categoryQuery || null}
+        onSelectCategory={(id) => {
+          setCategoryQuery(id);
+          setSearchQuery("");
+        }}
+      />
 
-        <CategoryComponent
-          selectedCategory={categoryQuery || null}
-          onSelectCategory={(id) => {
-            setCategoryQuery(id);
+      {isSearching && searchData.length === 0 ? (
+        <View style={{ flex: 1, alignItems: "center", marginTop: 40 }}>
+          <Text style={{ color: "red", fontSize: 20 }}>No Image Found</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={listData}
+          numColumns={2}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={{ gap: 10, paddingBottom: 20 }}
+          columnWrapperStyle={{ justifyContent: "space-between" }}
+          onEndReached={loadMore}
+          onEndReachedThreshold={0.3}
+          refreshing={feedQuery.isRefetching}
+          onRefresh={() => {
             setSearchQuery("");
+            setCategoryQuery("");
+            feedQuery.refetch();
           }}
+          ListFooterComponent={
+            feedQuery.isFetchingNextPage ||
+            searchQueryResult.isFetchingNextPage ||
+            categoryQueryResult.isFetchingNextPage ? (
+              <ActivityIndicator size="large" />
+            ) : null
+          }
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => {
+                setIsVisible(true);
+                setImageUrl(item.largeImageURL);
+                setImageId(item.id);
+              }}
+            >
+              <Image
+                source={{ uri: item.largeImageURL }}
+                style={styles.image}
+              />
+            </TouchableOpacity>
+          )}
         />
+      )}
 
-        {isSearching && searchData.length === 0 ? (
-          <View style={{ flex: 1, alignItems: "center", marginTop: 40 }}>
-            <Text style={{ color: "red", fontSize: 20 }}>No Image Found</Text>
-          </View>
-        ) : (
-          <FlatList
-            data={listData}
-            numColumns={2}
-            keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={{ gap: 10, paddingBottom: 20 }}
-            columnWrapperStyle={{ justifyContent: "space-between" }}
-            onEndReached={loadMore}
-            onEndReachedThreshold={0.3}
-            refreshing={feedQuery.isRefetching}
-            onRefresh={() => {
-              setSearchQuery("");
-              setCategoryQuery("");
-              feedQuery.refetch();
-            }}
-            ListFooterComponent={
-              feedQuery.isFetchingNextPage ||
-              searchQueryResult.isFetchingNextPage ||
-              categoryQueryResult.isFetchingNextPage ? (
-                <ActivityIndicator size="large" />
-              ) : null
-            }
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => {
-                  setIsVisible(true);
-                  setImageUrl(item.largeImageURL);
-                  setImageId(item.id);
-                }}
-              >
-                <Image
-                  source={{ uri: item.largeImageURL }}
-                  style={styles.image}
-                />
-              </TouchableOpacity>
-            )}
-          />
-        )}
-
-        <ImageViewer
-          isVisible={isVisible}
-          setIsVisible={setIsVisible}
-          url={imageUrl || ""}
-          imageId={imageId?.toString() || ""}
-        />
-      </View>
-    </SafeAreaView>
+      <ImageViewer
+        isVisible={isVisible}
+        setIsVisible={setIsVisible}
+        url={imageUrl || ""}
+        imageId={imageId?.toString() || ""}
+      />
+    </View>
   );
 }
 

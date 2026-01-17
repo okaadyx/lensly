@@ -1,43 +1,31 @@
-import { Ionicons } from "@expo/vector-icons";
-import React from "react";
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { StyleSheet, TextInput, View } from "react-native";
 
-type Props = {
-  value: string;
-  onChange: (text: string) => void;
-  onSubmit?: () => void;
-};
+const SearchComponent = () => {
+  const [value, setValue] = useState("");
+  const inputRef = useRef<TextInput>(null);
 
-const SearchComponent = ({ value, onChange, onSubmit }: Props) => {
-  const showClear = value.trim().length > 0;
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      inputRef.current?.focus();
+    }, 120);
+
+    return () => clearTimeout(timeout);
+  }, []);
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputWrapper}>
-        <Ionicons name="search" size={18} color="gray" />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Search here"
-          placeholderTextColor="gray"
-          value={value}
-          onChangeText={onChange}
-          onSubmitEditing={onSubmit}
-          returnKeyType="search"
-          autoCorrect={false}
-          // clearButtonMode="never"
-        />
-
-        {showClear && (
-          <TouchableOpacity
-            onPress={() => onChange("")}
-            hitSlop={8}
-            style={styles.clearButton}
-          >
-            <Ionicons name="close-circle" size={18} color="gray" />
-          </TouchableOpacity>
-        )}
-      </View>
+      <TextInput
+        ref={inputRef}
+        value={value}
+        onChangeText={setValue}
+        placeholder="Discover images and wallpapers"
+        placeholderTextColor="#A1A1AA"
+        style={styles.input}
+        returnKeyType="search"
+        autoCorrect={false}
+        autoCapitalize="none"
+      />
     </View>
   );
 };
@@ -46,28 +34,12 @@ export default SearchComponent;
 
 const styles = StyleSheet.create({
   container: {
-    height: 40,
-    width: "98%",
-    paddingHorizontal: 10,
-    backgroundColor: "white",
-    borderRadius: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "center",
-  },
-  inputWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
     flex: 1,
+    justifyContent: "center",
   },
   input: {
-    flex: 1,
-    height: 40,
-    marginLeft: 8,
-    color: "black",
-    backgroundColor: "white",
-  },
-  clearButton: {
-    paddingLeft: 6,
+    // fontSize: 18,
+    fontWeight: "400",
+    color: "#FFFFFF",
   },
 });
