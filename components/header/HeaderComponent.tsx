@@ -5,13 +5,10 @@ import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { SearchHeader } from "./SearchHeader";
 
 const HeaderComponent = () => {
-  const handleSearchPress = () => {
-    router.push("/(home)/search?autoFocus=true");
-  };
   return (
     <View
       style={{
-        padding: 8,
+        // padding: 8,
         flexDirection: "row",
         gap: 10,
         alignItems: "center",

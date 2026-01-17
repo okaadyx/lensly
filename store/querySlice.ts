@@ -10,6 +10,9 @@ const queryReducer = createSlice({
     setQuery: (state, action) => {
       state.query = action.payload;
     },
+    clearQuery: (state) => {
+      state.query = "";
+    },
   },
 });
 

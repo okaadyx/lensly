@@ -1,10 +1,12 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
 
-export default function search() {
+export default function Search() {
+  const query = useSelector((state: any) => state.query.query);
   return (
     <View>
-      <Text>search</Text>
+      <Text style={{ color: "red", fontSize: 20 }}>{query}</Text>
     </View>
   );
 }

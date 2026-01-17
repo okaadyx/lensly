@@ -1,9 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import { setQuery } from "@/store/querySlice";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useEffect, useRef } from "react";
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 
 const SearchComponent = () => {
-  const [value, setValue] = useState("");
+  const dispatch = useDispatch();
+  const query = useSelector((state: any) => state.query.query);
   const inputRef = useRef<TextInput>(null);
+
+  const showClear = query.trim().length > 0;
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -13,12 +19,17 @@ const SearchComponent = () => {
     return () => clearTimeout(timeout);
   }, []);
 
+  const handleClear = () => {
+    dispatch(setQuery(""));
+    inputRef.current?.focus();
+  };
+
   return (
     <View style={styles.container}>
       <TextInput
         ref={inputRef}
-        value={value}
-        onChangeText={setValue}
+        value={query}
+        onChangeText={(text) => dispatch(setQuery(text))}
         placeholder="Discover images and wallpapers"
         placeholderTextColor="#A1A1AA"
         style={styles.input}
@@ -26,20 +37,33 @@ const SearchComponent = () => {
         autoCorrect={false}
         autoCapitalize="none"
       />
+
+      {showClear && (
+        <TouchableOpacity
+          onPress={handleClear}
+          hitSlop={8}
+          style={styles.clearButton}
+        >
+          <Ionicons name="close-circle" size={18} color="#A1A1AA" />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
 
 export default SearchComponent;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    flexDirection: "row",
+    alignItems: "center",
   },
   input: {
-    // fontSize: 18,
+    flex: 1,
     fontWeight: "400",
     color: "#FFFFFF",
+  },
+  clearButton: {
+    paddingLeft: 8,
   },
 });
