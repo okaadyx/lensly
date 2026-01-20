@@ -1,6 +1,4 @@
-import BottomSheet, {
-  BottomSheetView,
-} from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import React, { useCallback, useMemo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -15,26 +13,24 @@ export default function SetWallpaperBottomSheet({
   onSelect: (type: WallpaperType) => void;
   onClose?: () => void;
 }) {
-  const snapPoints = useMemo(() => ["30%","50%"], []);
+  const snapPoints = useMemo(() => ["30%", "50%"], []);
 
   const handleOptionPress = useCallback(
     (type: WallpaperType) => {
-
       sheetRef.current?.close();
-    
+
       onSelect(type);
     },
-    [onSelect, sheetRef]
+    [onSelect, sheetRef],
   );
 
   const handleSheetChange = useCallback(
     (index: number) => {
-  
       if (index === -1 && onClose) {
         onClose();
       }
     },
-    [onClose]
+    [onClose],
   );
 
   return (

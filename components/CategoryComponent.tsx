@@ -1,5 +1,5 @@
 import { PIXABAY_CATEGORIES } from "@/constants/category";
-import React from "react";
+import React, { useRef } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -14,21 +14,33 @@ type Props = {
 };
 
 const CategoryComponent = ({ selectedCategory, onSelectCategory }: Props) => {
+  const listRef = useRef<FlatList>(null);
+
+  const onSelectItem = (index: number, id: string) => {
+    const isSame = selectedCategory === id;
+    onSelectCategory(isSame ? "" : id);
+    listRef.current?.scrollToIndex({
+      index: isSame ? 0 : index,
+      animated: true,
+      viewPosition: 0.03,
+    });
+  };
+
   return (
     <View>
       <FlatList
         horizontal
+        ref={listRef}
         showsHorizontalScrollIndicator={false}
         data={Object.values(PIXABAY_CATEGORIES)}
         keyExtractor={(item) => item.id}
-        extraData={selectedCategory}
         contentContainerStyle={styles.container}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
           const isSelected = item.id === selectedCategory;
 
           return (
             <TouchableOpacity
-              onPress={() => onSelectCategory(item.id)}
+              onPress={() => onSelectItem(index, item.id)}
               activeOpacity={0.8}
             >
               <View style={[styles.item, isSelected && styles.selectedItem]}>

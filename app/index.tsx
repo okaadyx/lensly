@@ -7,7 +7,12 @@ import { ActivityIndicator, Text, View } from "react-native";
 export default function StartupScreen() {
   useEffect(() => {
     const checkLogin = async () => {
+      const token = await SecureStore.getItemAsync("token");
       try {
+        if (!token) {
+          await SecureStore.deleteItemAsync("token");
+          router.replace("/(auth)/welcome");
+        }
         const res = await userApi.user.getUser();
 
         if (res.user) {

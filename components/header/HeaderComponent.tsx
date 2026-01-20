@@ -1,10 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Image, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SearchHeader } from "./SearchHeader";
 
 const HeaderComponent = () => {
+  const scheme = useColorScheme();
   return (
     <View
       style={{
@@ -20,35 +21,14 @@ const HeaderComponent = () => {
       />
       <SearchHeader />
       <TouchableOpacity onPress={() => router.push("/(home)/account")}>
-        <Ionicons name="person-circle-outline" size={40} color={"#fff"} />
+        <Ionicons
+          name="person-circle-outline"
+          size={40}
+          color={scheme === "dark" ? "#ffff" : "#a8a8a8"}
+        />
       </TouchableOpacity>
     </View>
   );
 };
 
 export default HeaderComponent;
-
-const styles = StyleSheet.create({
-  inputWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  container: {
-    height: 40,
-    width: "70%",
-    paddingHorizontal: 10,
-    backgroundColor: "white",
-    borderRadius: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "center",
-  },
-  input: {
-    flex: 1,
-    height: 40,
-    marginLeft: 8,
-    color: "black",
-    backgroundColor: "white",
-  },
-});

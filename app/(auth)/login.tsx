@@ -1,3 +1,4 @@
+import { HelloWave } from "@/components/hello-wave";
 import { userApi } from "@/services/UserService";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -31,7 +32,7 @@ export default function LoginScreen() {
       if (!email.trim() || !password.trim()) {
         Alert.alert(
           "Missing Information",
-          "Please enter both email and password."
+          "Please enter both email and password.",
         );
         return;
       }
@@ -45,7 +46,7 @@ export default function LoginScreen() {
       } else {
         Alert.alert(
           "Login Failed",
-          response?.message || "Invalid email or password"
+          response?.message || "Invalid email or password",
         );
       }
     } catch (error) {
@@ -62,9 +63,12 @@ export default function LoginScreen() {
     >
       <StatusBar style={isDark ? "light" : "dark"} />
 
-      <Text style={[styles.title, { color: isDark ? "#fff" : "#000" }]}>
-        Welcome Back 👋
-      </Text>
+      <View style={{ flexDirection: "row", gap: 10 }}>
+        <Text style={[styles.title, { color: isDark ? "#fff" : "#000" }]}>
+          Welcome Back
+        </Text>
+        <HelloWave />
+      </View>
       <Text style={[styles.subtitle, { color: isDark ? "#aaa" : "#666" }]}>
         Login to your account
       </Text>

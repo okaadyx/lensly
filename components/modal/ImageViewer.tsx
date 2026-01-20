@@ -4,23 +4,36 @@ import * as FileSystem from "expo-file-system/legacy";
 import * as IntentLauncher from "expo-intent-launcher";
 import * as MediaLibrary from "expo-media-library";
 import * as Sharing from "expo-sharing";
-import React, { useRef } from "react";
+
+import React from "react";
 import {
   Alert,
   Dimensions,
-  Image,
-  Modal,
   Platform,
-  Pressable,
   StyleSheet,
   TouchableOpacity,
   View,
+  useColorScheme,
 } from "react-native";
-import SetWallpaperBottomSheet from "./setWallpaper";
+import ImageViewing from "react-native-image-viewing";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width, height } = Dimensions.get("window");
 
 type WallpaperType = "lock" | "home" | "both";
+
+/* 🌗 Theme Colors */
+const lightTheme = {
+  overlay: "rgba(255,255,255,0.75)",
+  actionBtnBg: "rgba(0,0,0,0.08)",
+  icon: "#000",
+};
+
+const darkTheme = {
+  overlay: "rgba(0,0,0,0.45)",
+  actionBtnBg: "rgba(255,255,255,0.15)",
+  icon: "#fff",
+};
 
 export default function ImageViewer({
   isVisible,
@@ -33,18 +46,14 @@ export default function ImageViewer({
   url: string;
   imageId: string;
 }) {
-  const sheetRef = useRef<any>(null);
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === "dark" ? darkTheme : lightTheme;
 
-  const closeViewer = () => {
-    sheetRef.current?.snapToIndex(-1);
-    setIsVisible(false);
-  };
-
-  const handleSetWallpaper = async (type: WallpaperType) => {
+  const handleSetWallpaper = async (type?: WallpaperType) => {
     if (Platform.OS !== "android") {
       Alert.alert(
         "Not Supported",
-        "Wallpaper setting is only available on Android."
+        "Wallpaper setting is only available on Android.",
       );
       return;
     }
@@ -58,65 +67,45 @@ export default function ImageViewer({
       if (status !== "granted") {
         Alert.alert(
           "Permission Required",
-          "Please allow media access to set the wallpaper."
+          "Please allow media access to set the wallpaper.",
         );
         return;
       }
 
-      // Convert file:// URI to content:// URI using FileSystem
-      // This is required for Android 7+ to avoid FileUriExposedException
       const contentUri = await FileSystem.getContentUriAsync(fileUri);
 
-      // Verify we have a content:// URI
-      if (!contentUri.startsWith("content://")) {
-        throw new Error("Failed to get content URI");
-      }
-
-      // Use ACTION_ATTACH_DATA to open the system wallpaper picker
-      // FLAG_GRANT_READ_URI_PERMISSION (1) | FLAG_ACTIVITY_NEW_TASK (0x10000000)
-      // This grants read permission to the receiving app
       const flags = 1 | 0x10000000;
 
-      try {
-        await IntentLauncher.startActivityAsync(
-          "android.intent.action.ATTACH_DATA",
-          {
-            data: contentUri,
-            type: "image/*",
-            flags: flags,
-          }
-        );
-      } catch (intentError: any) {
-        console.error("Intent error:", intentError);
-        Alert.alert(
-          "Error",
-          "Failed to open wallpaper picker. Please set the wallpaper manually from your gallery."
-        );
-      }
+      await IntentLauncher.startActivityAsync(
+        "android.intent.action.ATTACH_DATA",
+        {
+          data: contentUri,
+          type: "image/*",
+          flags,
+        },
+      );
     } catch (error) {
-      console.error("Error setting wallpaper:", error);
-      Alert.alert("Error", "Failed to set wallpaper. Please try again.");
+      Alert.alert("Error", "Failed to set wallpaper.");
     }
   };
 
-  const onWishlist = async (data: any) => {
+  const onWishlist = async () => {
     try {
-      const response = await userApi.wishlist.addItem(data);
+      const response = await userApi.wishlist.addItem({
+        imageId,
+        imageUrl: url,
+      });
 
       if (response?.status === "success") {
         Alert.alert(
           "Added to wishlist",
-          "Your image successfully added to the wishlist"
+          "Image successfully added to wishlist",
         );
-        return;
+      } else {
+        Alert.alert("Error", "Something went wrong");
       }
-
-      Alert.alert(
-        "Something Went Wrong",
-        "Something went wrong please try again"
-      );
-    } catch (error) {
-      Alert.alert("Error", "Unable to add item to wishlist : ");
+    } catch {
+      Alert.alert("Error", "Unable to add to wishlist");
     }
   };
 
@@ -124,7 +113,7 @@ export default function ImageViewer({
     try {
       const isAvailable = await Sharing.isAvailableAsync();
       if (!isAvailable) {
-        Alert.alert("Sharing", "Sharing is not available");
+        Alert.alert("Sharing", "Sharing not available");
         return;
       }
 
@@ -141,13 +130,12 @@ export default function ImageViewer({
     if (status !== "granted") {
       Alert.alert(
         "Permission Required",
-        "Please allow media access to save the image."
+        "Please allow media access to save the image.",
       );
       return;
     }
 
-    const fileUri =
-      FileSystem.documentDirectory + `wallpaper-${Date.now()}.jpg`;
+    const fileUri = FileSystem.documentDirectory + `image-${Date.now()}.jpg`;
 
     await FileSystem.downloadAsync(url, fileUri);
     await MediaLibrary.saveToLibraryAsync(fileUri);
@@ -156,108 +144,87 @@ export default function ImageViewer({
   };
 
   return (
-    <Modal
-      visible={isVisible}
-      animationType="fade"
-      transparent
-      statusBarTranslucent
-      onRequestClose={closeViewer}
-    >
-      <View style={styles.modalContainer}>
-        <Pressable style={styles.overlay} onPress={closeViewer}>
-          <Pressable style={styles.content}>
-            <View style={styles.topBar}>
-              <TouchableOpacity>
-                <Ionicons name="ellipsis-vertical" size={24} color="#fff" />
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={closeViewer}>
-                <Ionicons name="close" size={28} color="#fff" />
-              </TouchableOpacity>
-            </View>
-
-            <Image
-              source={{ uri: url }}
-              style={styles.image}
-              resizeMode="contain"
-            />
-
-            <View style={styles.bottomBar}>
+    <SafeAreaView>
+      <ImageViewing
+        images={[{ uri: url }]}
+        visible={isVisible}
+        imageIndex={0}
+        HeaderComponent={() => null}
+        onRequestClose={() => setIsVisible(false)}
+        FooterComponent={() => (
+          <View style={styles.footerWrapper}>
+            <View
+              style={[styles.actionBar, { backgroundColor: theme.overlay }]}
+            >
               <TouchableOpacity
-                style={styles.actionBtn}
-                onPress={() => onWishlist({ imageId: imageId, imageUrl: url })}
+                style={[
+                  styles.actionBtn,
+                  { backgroundColor: theme.actionBtnBg },
+                ]}
+                onPress={onWishlist}
               >
-                <MaterialIcons name="favorite" size={26} color="#fff" />
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.actionBtn} onPress={onDownload}>
-                <MaterialIcons name="file-download" size={26} color="#fff" />
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.actionBtn} onPress={onSharing}>
-                <Ionicons name="share-social" size={24} color="#fff" />
+                <MaterialIcons name="favorite" size={26} color={theme.icon} />
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.actionBtn}
-                onPress={() => {
-                  if (sheetRef.current) {
-                    sheetRef.current.snapToIndex(0);
-                  }
-                }}
+                style={[
+                  styles.actionBtn,
+                  { backgroundColor: theme.actionBtnBg },
+                ]}
+                onPress={onDownload}
               >
-                <Ionicons name="image" size={24} color="#fff" />
+                <MaterialIcons
+                  name="file-download"
+                  size={26}
+                  color={theme.icon}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.actionBtn,
+                  { backgroundColor: theme.actionBtnBg },
+                ]}
+                onPress={onSharing}
+              >
+                <Ionicons name="share-social" size={24} color={theme.icon} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.actionBtn,
+                  { backgroundColor: theme.actionBtnBg },
+                ]}
+                onPress={handleSetWallpaper}
+              >
+                <Ionicons name="image" size={24} color={theme.icon} />
               </TouchableOpacity>
             </View>
-          </Pressable>
-        </Pressable>
-
-        <SetWallpaperBottomSheet
-          sheetRef={sheetRef}
-          onSelect={handleSetWallpaper}
-          onClose={() => {
-            // Optional: handle any cleanup when sheet closes
-          }}
-        />
-      </View>
-    </Modal>
+          </View>
+        )}
+      />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.9)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  content: {
-    alignItems: "center",
-  },
-  topBar: {
+  footerWrapper: {
     position: "absolute",
-    top: -50,
-    width: width * 0.9,
+    bottom: 20,
+    width: "100%",
+    alignItems: "center",
+  },
+
+  actionBar: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 10,
-    zIndex: 10,
+    gap: 26,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 40,
+    marginBottom: 24,
   },
-  image: {
-    width: width * 0.9,
-    height: height * 0.7,
-    borderRadius: 16,
-  },
-  bottomBar: {
-    flexDirection: "row",
-    marginTop: 20,
-    gap: 30,
-  },
+
   actionBtn: {
-    backgroundColor: "rgba(255,255,255,0.15)",
     width: 56,
     height: 56,
     borderRadius: 28,

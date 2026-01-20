@@ -1,8 +1,10 @@
 import { MenuItem } from "@/constants/menu";
+import { queryClient } from "@/lib/QueryClient";
 import { userApi } from "@/services/UserService";
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import {
   ActivityIndicator,
   Alert,
@@ -52,7 +54,7 @@ export default function AccountScreen() {
             onPress={() =>
               Alert.alert(
                 "Screen not implemented",
-                "Wait for next update to use this feature"
+                "Wait for next update to use this feature",
               )
             }
           >
@@ -96,9 +98,20 @@ export default function AccountScreen() {
           onPress={() =>
             Alert.alert(
               "Screen not implemented",
-              "Wait for next update to use this feature"
+              "Wait for next update to use this feature",
             )
           }
+        />
+        <MenuItem
+          icon="log-out-outline"
+          label="Logout"
+          onPress={async () => {
+            await SecureStore.deleteItemAsync("token");
+            queryClient.invalidateQueries({
+              queryKey: ["user"],
+            });
+            router.replace("/(auth)/welcome");
+          }}
         />
       </View>
     </View>

@@ -1,13 +1,34 @@
 import { setQuery } from "@/store/querySlice";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useRef } from "react";
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+  useColorScheme,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+
+const lightTheme = {
+  text: "#18181B",
+  placeholder: "#71717A",
+  icon: "#71717A",
+};
+
+const darkTheme = {
+  text: "#FFFFFF",
+  placeholder: "#A1A1AA",
+  icon: "#A1A1AA",
+};
 
 const SearchComponent = () => {
   const dispatch = useDispatch();
   const query = useSelector((state: any) => state.query.query);
   const inputRef = useRef<TextInput>(null);
+
+  const scheme = useColorScheme();
+  const theme = scheme === "dark" ? darkTheme : lightTheme;
 
   const showClear = query.trim().length > 0;
 
@@ -31,8 +52,8 @@ const SearchComponent = () => {
         value={query}
         onChangeText={(text) => dispatch(setQuery(text))}
         placeholder="Discover images and wallpapers"
-        placeholderTextColor="#A1A1AA"
-        style={styles.input}
+        placeholderTextColor={theme.placeholder}
+        style={[styles.input, { color: theme.text }]}
         returnKeyType="search"
         autoCorrect={false}
         autoCapitalize="none"
@@ -44,7 +65,7 @@ const SearchComponent = () => {
           hitSlop={8}
           style={styles.clearButton}
         >
-          <Ionicons name="close-circle" size={18} color="#A1A1AA" />
+          <Ionicons name="close-circle" size={18} color={theme.icon} />
         </TouchableOpacity>
       )}
     </View>
@@ -52,6 +73,7 @@ const SearchComponent = () => {
 };
 
 export default SearchComponent;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -61,7 +83,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontWeight: "400",
-    color: "#FFFFFF",
   },
   clearButton: {
     paddingLeft: 8,
