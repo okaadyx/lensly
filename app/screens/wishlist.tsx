@@ -1,3 +1,4 @@
+import Toast from "@/components/core/Toast";
 import ImageViewer from "@/components/modal/ImageViewer";
 import { queryClient } from "@/lib/QueryClient";
 import { userApi } from "@/services/UserService";
@@ -35,7 +36,7 @@ export default function WishlistScreen() {
   const removeMutation = useMutation({
     mutationFn: (imageId: string) => userApi.wishlist.removeItem(imageId),
     onSuccess: () => {
-      Alert.alert("Item Removed", "Item Removed From Wishlist");
+      Toast("Image Removed From Wishlist");
       queryClient.invalidateQueries({ queryKey: ["wishlist"] });
     },
     onError: () => {

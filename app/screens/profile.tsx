@@ -1,6 +1,12 @@
+import Toast from "@/components/core/Toast";
+import { queryClient } from "@/lib/QueryClient";
+import { userApi } from "@/services/UserService";
 import { Feather } from "@expo/vector-icons";
-import React from "react";
+import { useQuery } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   StyleSheet,
   Text,
@@ -14,6 +20,51 @@ export default function ProfileScreen() {
   const theme = useColorScheme();
   const isDark = theme === "dark";
   const styles = getStyles(isDark);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
+  const { data } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => userApi.user.getUser(),
+  });
+
+  const handleUpdate = async () => {
+    setIsUpdating(true);
+    try {
+      if (!name.trim() || !email.trim()) {
+        Alert.alert("Information Required", "Name and Email both is required ");
+        return;
+      }
+      const response = await userApi.user.updateUser({ name, email });
+      if (response.status === "success") {
+        Toast("Profile Updated");
+
+        queryClient.invalidateQueries({
+          queryKey: ["user"],
+        });
+      } else {
+        Alert.alert(
+          "Update Failed",
+          "Something went wrong please try again later",
+        );
+      }
+    } catch (error: any) {
+      console.log(error);
+      Alert.alert(
+        "Update Failed",
+        error.response?.data?.message || "Something went wrong",
+      );
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  useEffect(() => {
+    if (data) {
+      setName(data.user.name);
+      setEmail(data.user.email);
+    }
+  }, [data]);
 
   return (
     <View style={styles.container}>
@@ -37,8 +88,8 @@ export default function ProfileScreen() {
         <View style={styles.inputWrapper}>
           <TextInput
             style={styles.input}
-            value="Jane Cooper"
-            // editable={false}
+            value={name}
+            onChangeText={setName}
             placeholderTextColor={isDark ? "#aaa" : "#888"}
           />
           <Feather name="edit-2" size={16} color={isDark ? "#aaa" : "#888"} />
@@ -50,29 +101,20 @@ export default function ProfileScreen() {
         <View style={styles.inputWrapper}>
           <TextInput
             style={styles.input}
-            value="jane.cooper@example.com"
-            // editable={false}
+            value={email}
+            onChangeText={setEmail}
             placeholderTextColor={isDark ? "#aaa" : "#888"}
           />
           <Feather name="edit-2" size={16} color={isDark ? "#aaa" : "#888"} />
         </View>
       </View>
 
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>LOCATION</Text>
-        <View style={styles.inputWrapper}>
-          <TextInput
-            style={styles.input}
-            value="San Francisco, CA"
-            // editable={false}
-            placeholderTextColor={isDark ? "#aaa" : "#888"}
-          />
-          <Feather name="edit-2" size={16} color={isDark ? "#aaa" : "#888"} />
-        </View>
-      </View>
-
-      <TouchableOpacity style={styles.saveButton}>
-        <Text style={styles.saveButtonText}>Save Changes</Text>
+      <TouchableOpacity style={styles.saveButton} onPress={handleUpdate}>
+        {isUpdating ? (
+          <ActivityIndicator />
+        ) : (
+          <Text style={styles.saveButtonText}>Save Changes</Text>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -151,7 +193,7 @@ const getStyles = (isDark: boolean) =>
     },
 
     saveButton: {
-      marginTop: "auto",
+      marginTop: "80%",
       backgroundColor: isDark ? "#fff" : "#000",
       height: 54,
       borderRadius: 10,

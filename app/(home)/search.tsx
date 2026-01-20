@@ -70,13 +70,14 @@ export default function SearchScreen() {
   }
 
   return (
-    <View>
+    <View style={{ marginBottom: 30, marginTop: 10 }}>
       <FlatList
         data={searchData}
         numColumns={2}
+        showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ gap: 10, paddingBottom: 20 }}
-        columnWrapperStyle={{ justifyContent: "space-between" }}
+        contentContainerStyle={{ gap: 10 }}
+        columnWrapperStyle={{ alignSelf: "center" }}
         onEndReached={() =>
           searchQueryResult.hasNextPage && searchQueryResult.fetchNextPage()
         }

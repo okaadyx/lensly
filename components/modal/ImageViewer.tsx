@@ -8,7 +8,6 @@ import * as Sharing from "expo-sharing";
 import React from "react";
 import {
   Alert,
-  Dimensions,
   Platform,
   StyleSheet,
   TouchableOpacity,
@@ -17,12 +16,10 @@ import {
 } from "react-native";
 import ImageViewing from "react-native-image-viewing";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-const { width, height } = Dimensions.get("window");
+import Toast from "../core/Toast";
 
 type WallpaperType = "lock" | "home" | "both";
 
-/* 🌗 Theme Colors */
 const lightTheme = {
   overlay: "rgba(255,255,255,0.75)",
   actionBtnBg: "rgba(0,0,0,0.08)",
@@ -97,15 +94,12 @@ export default function ImageViewer({
       });
 
       if (response?.status === "success") {
-        Alert.alert(
-          "Added to wishlist",
-          "Image successfully added to wishlist",
-        );
+        Toast(response?.message);
       } else {
         Alert.alert("Error", "Something went wrong");
       }
     } catch {
-      Alert.alert("Error", "Unable to add to wishlist");
+      Toast("Already Exist in Wishlist");
     }
   };
 
@@ -139,8 +133,7 @@ export default function ImageViewer({
 
     await FileSystem.downloadAsync(url, fileUri);
     await MediaLibrary.saveToLibraryAsync(fileUri);
-
-    Alert.alert("Saved", "Image saved to gallery");
+    Toast("Image Saved to Gallery");
   };
 
   return (

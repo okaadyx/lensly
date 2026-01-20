@@ -46,7 +46,7 @@ export default function AccountScreen() {
           <Image
             style={styles.avatar}
             source={{
-              uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=687&auto=format&fit=crop",
+              uri: "https://i.pravatar.cc/300",
             }}
           />
           <TouchableOpacity
@@ -77,30 +77,10 @@ export default function AccountScreen() {
           label="Edit Profile"
           onPress={() => router.push("/screens/profile")}
         />
-        {/* <MenuItem
-          icon="lock-closed-outline"
-          label="Add Pin"
-          onPress={() =>
-            Alert.alert(
-              "Screen not implemented",
-              "Wait for next update to use this feature"
-            )
-          }
-        /> */}
         <MenuItem
           icon="heart-outline"
           label="Wishlist"
           onPress={() => router.push("/screens/wishlist")}
-        />
-        <MenuItem
-          icon="settings-outline"
-          label="Settings"
-          onPress={() =>
-            Alert.alert(
-              "Screen not implemented",
-              "Wait for next update to use this feature",
-            )
-          }
         />
         <MenuItem
           icon="log-out-outline"

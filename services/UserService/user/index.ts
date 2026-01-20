@@ -35,4 +35,12 @@ export default class User {
     }
     return response.data;
   }
+
+  async updateUser(data: any) {
+    const headers = await this.getAuthHeader();
+    const response = await this.client.put("/users/update", data, {
+      headers,
+    });
+    return response.data;
+  }
 }

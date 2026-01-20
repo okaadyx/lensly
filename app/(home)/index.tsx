@@ -65,8 +65,12 @@ export default function HomeScreen() {
         data={listData}
         numColumns={2}
         keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ gap: 10, paddingBottom: 20 }}
-        columnWrapperStyle={{ justifyContent: "space-between" }}
+        contentContainerStyle={{
+          gap: 10,
+          paddingBottom: 20,
+          alignItems: "center",
+        }}
+        columnWrapperStyle={{}}
         onEndReached={loadMore}
         onEndReachedThreshold={0.3}
         refreshing={feedQuery.isRefetching}
