@@ -17,7 +17,7 @@ const HeaderComponent = () => {
     >
       <Image
         source={require("@/assets/images/app-icon.png")}
-        style={{ height: 60, width: 50, borderRadius: 50 }}
+        style={{ height: 50, width: 50, borderRadius: 50 }}
       />
       <SearchHeader />
       <TouchableOpacity onPress={() => router.push("/(home)/account")}>

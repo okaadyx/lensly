@@ -21,7 +21,7 @@ const WelcomeScreen = () => {
 
       <Animated.View entering={FadeInUp.duration(500)} style={{ flex: 1 }}>
         <View style={styles.textContainer}>
-          <Text style={styles.titleText}>Quick Pic</Text>
+          <Text style={styles.titleText}>Lensly</Text>
           <Text style={styles.subText}>Every Pixel Tells a Story</Text>
 
           <Pressable

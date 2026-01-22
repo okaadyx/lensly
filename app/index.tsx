@@ -2,17 +2,26 @@ import { userApi } from "@/services/UserService";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 export default function StartupScreen() {
   useEffect(() => {
     const checkLogin = async () => {
-      const token = await SecureStore.getItemAsync("token");
       try {
+        const token = await SecureStore.getItemAsync("token");
+
         if (!token) {
           await SecureStore.deleteItemAsync("token");
           router.replace("/(auth)/welcome");
+          return;
         }
+
         const res = await userApi.user.getUser();
 
         if (res.user) {
@@ -26,20 +35,42 @@ export default function StartupScreen() {
         router.replace("/(auth)/welcome");
       }
     };
+
     checkLogin();
   }, []);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "black",
-      }}
-    >
-      <ActivityIndicator size="large" color="#ca7cd8" />
-      <Text style={{ color: "white", marginTop: 10 }}>Loading...</Text>
+    <View style={styles.root}>
+      <ImageBackground
+        source={require("@/assets/images/background.png")}
+        style={styles.background}
+        resizeMode="cover"
+      >
+        <View style={styles.bottomLoader}>
+          <ActivityIndicator size="small" color="#ca7cd8" />
+          <Text style={styles.loadingText}>Checking for updates...</Text>
+        </View>
+      </ImageBackground>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
+  background: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  bottomLoader: {
+    alignItems: "center",
+    paddingBottom: 40,
+  },
+  loadingText: {
+    color: "white",
+    marginTop: 8,
+    fontSize: 14,
+    opacity: 0.9,
+  },
+});
