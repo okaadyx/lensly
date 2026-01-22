@@ -62,6 +62,7 @@ export default function HomeScreen() {
       />
 
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={listData}
         numColumns={2}
         keyExtractor={(item) => item.id.toString()}

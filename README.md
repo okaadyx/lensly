@@ -1,60 +1,92 @@
-# Quick-Pic: A Mobile Image Explorer
+# Quick-Pic (Lensly) 📸
 
-Quick-Pic is a mobile application built with React Native and Expo, designed for browsing and exploring images. It provides a simple and intuitive interface for users to view a collection of images, with features for searching and viewing high-resolution images.
+> **A beautiful, high-performance mobile image explorer built with React Native & Expo.**
 
-## Features
+Quick-Pic (internally **Lensly**) is a feature-rich mobile application that allows users to discover, search, and curate high-resolution images. Built typically for browsing efficiency and visual appeal, it leverages the power of the [Pixabay API](https://pixabay.com/api/docs/) to deliver millions of stunning photos directly to your device.
 
-*   **Image Gallery:** Browse a gallery of images in a clean and organized layout.
-*   **Image Search:** Search for specific images.
-*   **High-Resolution Viewer:** View images in a high-resolution modal view.
-*   **Cross-Platform:** Runs on Android, iOS, and the web.
+---
 
-## Getting Started
+## ✨ Features
 
-To get started with Quick-Pic, follow these steps:
+- **🔐 User Authentication**: Secure Login and Signup flows to personalize the experience.
+- **🌍 Discover**: Browse a curated feed of trending and editor's choice photos.
+- **🔍 Powerful Search**: Instantly find what you're looking for with a robust search implementation (powered by Redux).
+- **❤️ Wishlist**: Save your favorite images to a local wishlist for quick access later.
+- **🖼️ High-Res Viewer**: Tap any image to view it in full-screen detail with smooth modal transitions.
+- **📱 Cross-Platform**: Optimized for both Android and iOS devices.
 
-1.  **Install Dependencies:**
+## 🛠️ Tech Stack
+
+This project uses a modern, robust stack designed for performance and developer experience:
+
+- **Core Framework**: [React Native](https://reactnative.dev/) (via [Expo SDK 52](https://expo.dev/))
+- **Routing**: [Expo Router](https://docs.expo.dev/router/introduction/) (File-based routing)
+- **State Management**: [Redux Toolkit](https://redux-toolkit.js.org/)
+- **Data Fetching**: [React Query](https://tanstack.com/query/latest) & [Axios](https://axios-http.com/)
+- **Styling**: React Native StyleSheet & Vector Icons
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+
+##  Getting Started
+
+Follow these steps to set up the project locally on your machine.
+
+### Prerequisites
+
+- **Node.js** (LTS version recommended)
+- **Expo Go** app installed on your physical device (Android/iOS) OR an Emulator/Simulator.
+
+### Installation
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/okaady/quick-pic.git
+    cd quick-pic
+    ```
+
+2.  **Install dependencies:**
     ```bash
     npm install
     ```
 
-2.  **Start the Application:**
+3.  **Start the development server:**
     ```bash
     npx expo start
     ```
 
-    This will open the Expo developer tools in your browser. You can then choose to run the app on an Android emulator, iOS simulator, or on a physical device using the Expo Go app.
+4.  **Run on device/emulator:**
+    -   **Physical Device**: Scan the QR code with the **Expo Go** app.
+    -   **Emulator**: Press `a` for Android or `i` for iOS in the terminal.
 
-## Available Scripts
+## ⚠️ Important Notes
 
-In the project directory, you can run the following commands:
+-   **API Key**: The project currently uses a pre-configured Pixabay API key located in `services/imageService/images/index.ts`. For production use, this should be moved to an environment variable (`.env`).
+-   **Reset Project**: If you need to wipe the project state, run `npm run reset-project`.
 
-*   `npm start`: Starts the Expo development server.
-*   `npm run android`: Starts the app on a connected Android device or emulator.
-*   `npm run ios`: Starts the app on the iOS simulator.
-*   `npm run web`: Starts the app in a web browser.
-*   `npm run lint`: Lints the project files using ESLint.
-*   `npm run reset-project`: Resets the project to a blank state.
+## 📂 Project Structure
 
-## Technologies Used
+Here's a quick look at the top-level directory structure:
 
-*   **React Native:** A framework for building native apps using React.
-*   **Expo:** A platform for making universal React applications.
-*   **Expo Router:** A file-based routing system for React Native and web apps.
-*   **React Query:** For data fetching and caching.
-*   **Axios:** A promise-based HTTP client for the browser and Node.js.
-*   **TypeScript:** A typed superset of JavaScript.
+```
+quick-pic/
+├── app/                 # Screens and Navigation (Expo Router)
+│   ├── auth/            # Authentication screens (Login/Signup)
+│   ├── home/            # Main feed and dashboard
+│   ├── _layout.tsx      # Root layout configuration
+│   └── index.tsx        # Entry point
+├── components/          # Reusable UI components (Buttons, Cards, Inputs)
+├── services/            # API and Logic references
+│   ├── imageService/    # Pixabay API integration
+│   ├── UserService/     # User data management
+│   └── wishlist/        # Wishlist service logic
+├── store/               # Redux store and slices
+├── assets/              # Static images and fonts
+└── constants/           # App-wide constants (Colors, Themes)
+```
 
-## Project Structure
+## 🤝 Contributing
 
-The project is organized as follows:
+Contributions are welcome! If you have suggestions for improvements or find any bugs, please modify the code and submit a pull request.
 
-*   `app/`: Contains the screens and navigation logic for the app, using file-based routing.
-*   `assets/`: Contains static assets like images and fonts.
-*   `components/`: Contains reusable UI components.
-*   `constants/`: Contains constants such as theme colors.
-*   `hooks/`: Contains custom React hooks.
-*   `lib/`: Contains library configurations, such as the React Query client.
-*   `services/`: Contains services for interacting with external APIs.
+## 📄 License
 
-Feel free to explore the code and contribute to the project!
+This project is open-source and available under the [MIT License](LICENSE).
