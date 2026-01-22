@@ -26,7 +26,7 @@ This project uses a modern, robust stack designed for performance and developer 
 - **Styling**: React Native StyleSheet & Vector Icons
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 
-##  Getting Started
+## 🚀 Getting Started
 
 Follow these steps to set up the project locally on your machine.
 
@@ -48,19 +48,20 @@ Follow these steps to set up the project locally on your machine.
     npm install
     ```
 
-3.  **Start the development server:**
+3.  **Environment Configuration:**
+    Create a `.env` file in the root directory and add your Pixabay API key:
+    ```bash
+    EXPO_PUBLIC_PIXABAY_KEY=your_pixabay_api_key_here
+    ```
+
+4.  **Start the development server:**
     ```bash
     npx expo start
     ```
 
-4.  **Run on device/emulator:**
+5.  **Run on device/emulator:**
     -   **Physical Device**: Scan the QR code with the **Expo Go** app.
     -   **Emulator**: Press `a` for Android or `i` for iOS in the terminal.
-
-## ⚠️ Important Notes
-
--   **API Key**: The project currently uses a pre-configured Pixabay API key located in `services/imageService/images/index.ts`. For production use, this should be moved to an environment variable (`.env`).
--   **Reset Project**: If you need to wipe the project state, run `npm run reset-project`.
 
 ## 📂 Project Structure
 
