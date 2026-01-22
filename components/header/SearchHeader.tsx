@@ -5,7 +5,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export function SearchHeader() {
   const handleSearchPress = () => {
-    router.push("/(home)/search?autoFocus=true");
+    router.push("/home/search?autoFocus=true");
   };
 
   return (

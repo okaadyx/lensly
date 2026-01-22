@@ -18,21 +18,21 @@ export default function StartupScreen() {
 
         if (!token) {
           await SecureStore.deleteItemAsync("token");
-          router.replace("/(auth)/welcome");
+          router.replace("/auth/welcome");
           return;
         }
 
         const res = await userApi.user.getUser();
 
         if (res.user) {
-          router.replace("/(home)");
+          router.replace("/home");
         } else {
           await SecureStore.deleteItemAsync("token");
-          router.replace("/(auth)/welcome");
+          router.replace("/auth/welcome");
         }
       } catch (error) {
         console.log("Error checking login:", error);
-        router.replace("/(auth)/welcome");
+        router.replace("/auth/welcome");
       }
     };
 

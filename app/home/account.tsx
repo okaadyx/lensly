@@ -7,7 +7,6 @@ import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import {
   ActivityIndicator,
-  Alert,
   Image,
   StyleSheet,
   Text,
@@ -51,12 +50,7 @@ export default function AccountScreen() {
           />
           <TouchableOpacity
             style={[styles.editIcon, { backgroundColor: colors.accent }]}
-            onPress={() =>
-              Alert.alert(
-                "Screen not implemented",
-                "Wait for next update to use this feature",
-              )
-            }
+            onPress={() => router.push("/screens/profile")}
           >
             <Ionicons name="create" size={22} color="#fff" />
           </TouchableOpacity>
@@ -90,7 +84,7 @@ export default function AccountScreen() {
             queryClient.invalidateQueries({
               queryKey: ["user"],
             });
-            router.replace("/(auth)/welcome");
+            router.replace("/auth/welcome");
           }}
         />
       </View>

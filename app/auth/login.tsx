@@ -1,3 +1,4 @@
+import { HelloWave } from "@/components/hello-wave";
 import { userApi } from "@/services/UserService";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -14,39 +15,38 @@ import {
   View,
 } from "react-native";
 
-export default function SignupScreen() {
+export default function LoginScreen() {
   const router = useRouter();
   const scheme = useColorScheme();
   const isDark = scheme === "dark";
 
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSignup = async () => {
+  const handleLogin = async () => {
     if (loading) return;
 
     try {
-      if (!name.trim() || !email.trim() || !password.trim()) {
+      if (!email.trim() || !password.trim()) {
         Alert.alert(
           "Missing Information",
-          "Please enter name, email, and password."
+          "Please enter both email and password.",
         );
         return;
       }
 
       setLoading(true);
 
-      const response = await userApi.user.signup({ name, email, password });
+      const response = await userApi.user.login({ email, password });
 
       if (response?.token) {
-        router.replace("/(tabs)");
+        router.replace("/home");
       } else {
         Alert.alert(
-          "Signup Failed",
-          response?.message || "Failed to create account"
+          "Login Failed",
+          response?.message || "Invalid email or password",
         );
       }
     } catch (error) {
@@ -63,26 +63,15 @@ export default function SignupScreen() {
     >
       <StatusBar style={isDark ? "light" : "dark"} />
 
-      <Text style={[styles.title, { color: isDark ? "#fff" : "#000" }]}>
-        Create Account
-      </Text>
+      <View style={{ flexDirection: "row", gap: 10 }}>
+        <Text style={[styles.title, { color: isDark ? "#fff" : "#000" }]}>
+          Welcome Back
+        </Text>
+        <HelloWave />
+      </View>
       <Text style={[styles.subtitle, { color: isDark ? "#aaa" : "#666" }]}>
-        Join Quick Pic today
+        Login to your account
       </Text>
-
-      <TextInput
-        value={name}
-        placeholder="Full Name"
-        placeholderTextColor={isDark ? "#777" : "#999"}
-        onChangeText={setName}
-        style={[
-          styles.input,
-          {
-            backgroundColor: isDark ? "#111" : "#f7f7f7",
-            color: isDark ? "#fff" : "#000",
-          },
-        ]}
-      />
 
       <TextInput
         value={email}
@@ -101,6 +90,7 @@ export default function SignupScreen() {
         ]}
       />
 
+      {/* Password Input with Eye Icon */}
       <View
         style={[
           styles.passwordContainer,
@@ -131,18 +121,18 @@ export default function SignupScreen() {
 
       <Pressable
         style={[styles.button, loading && styles.buttonDisabled]}
-        onPress={handleSignup}
+        onPress={handleLogin}
       >
         {loading ? (
           <ActivityIndicator color="#fff" />
         ) : (
-          <Text style={styles.buttonText}>Sign Up</Text>
+          <Text style={styles.buttonText}>Login</Text>
         )}
       </Pressable>
 
-      <Pressable onPress={() => router.back()}>
+      <Pressable onPress={() => router.push("/auth/signup")}>
         <Text style={[styles.link, { color: isDark ? "#aaa" : "#555" }]}>
-          Already have an account? <Text style={styles.linkBold}>Login</Text>
+          Don’t have an account? <Text style={styles.linkBold}>Sign up</Text>
         </Text>
       </Pressable>
     </View>

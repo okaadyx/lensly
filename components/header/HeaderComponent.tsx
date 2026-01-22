@@ -20,7 +20,7 @@ const HeaderComponent = () => {
         style={{ height: 50, width: 50, borderRadius: 50 }}
       />
       <SearchHeader />
-      <TouchableOpacity onPress={() => router.push("/(home)/account")}>
+      <TouchableOpacity onPress={() => router.push("/home/account")}>
         <Ionicons
           name="person-circle-outline"
           size={40}

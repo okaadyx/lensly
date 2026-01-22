@@ -4,7 +4,7 @@ import { Stack } from "expo-router";
 
 export default function HomeLayout() {
   return (
-    <Stack screenOptions={{}}>
+    <Stack screenOptions={{}} initialRouteName="index">
       <Stack.Screen
         name="index"
         options={{ headerTitle: () => <HeaderComponent /> }}

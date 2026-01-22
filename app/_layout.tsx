@@ -16,10 +16,6 @@ import React from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
 
-export const unstable_settings = {
-  anchor: "(tabs)",
-};
-
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
@@ -33,8 +29,8 @@ export default function RootLayout() {
             >
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="index" />
-                <Stack.Screen name="(auth)" />
-                <Stack.Screen name="(home)" />
+                <Stack.Screen name="auth" />
+                <Stack.Screen name="home" />
                 <Stack.Screen
                   name="modal"
                   options={{ presentation: "modal", title: "Modal" }}
