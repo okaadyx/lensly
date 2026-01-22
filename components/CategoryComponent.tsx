@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   selectedItem: {
-    backgroundColor: "green",
+    backgroundColor: "#1d6ca7",
   },
   text: {
     color: "black",

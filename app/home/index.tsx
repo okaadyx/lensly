@@ -1,6 +1,6 @@
 import CategoryComponent from "@/components/CategoryComponent";
 import ImageViewer from "@/components/modal/ImageViewer";
-import { api } from "@/services";
+import { api } from "@/services/imageService";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import {
