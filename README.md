@@ -1,8 +1,8 @@
-# Quick-Pic (Lensly) 📸
+# Lensly 📸
 
 > **A beautiful, high-performance mobile image explorer built with React Native & Expo.**
 
-Quick-Pic (internally **Lensly**) is a feature-rich mobile application that allows users to discover, search, and curate high-resolution images. Built typically for browsing efficiency and visual appeal, it leverages the power of the [Pixabay API](https://pixabay.com/api/docs/) to deliver millions of stunning photos directly to your device.
+**Lensly** is a feature-rich mobile application that allows users to discover, search, and curate high-resolution images. Built for browsing efficiency and visual appeal, it leverages the power of the [Pixabay API](https://pixabay.com/api/docs/) to deliver millions of stunning photos directly to your device.
 
 ---
 
@@ -39,8 +39,8 @@ Follow these steps to set up the project locally on your machine.
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/okaady/quick-pic.git
-    cd quick-pic
+    git clone https://github.com/okaadyx/lensly.git
+    cd lensly
     ```
 
 2.  **Install dependencies:**
@@ -68,7 +68,7 @@ Follow these steps to set up the project locally on your machine.
 Here's a quick look at the top-level directory structure:
 
 ```
-quick-pic/
+lensly/
 ├── app/                 # Screens and Navigation (Expo Router)
 │   ├── auth/            # Authentication screens (Login/Signup)
 │   ├── home/            # Main feed and dashboard
