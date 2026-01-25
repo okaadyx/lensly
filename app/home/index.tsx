@@ -10,23 +10,36 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  useWindowDimensions,
 } from "react-native";
 
 export default function HomeScreen() {
   const [categoryQuery, setCategoryQuery] = useState("");
-
   const [isVisible, setIsVisible] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageId, setImageId] = useState<string | null>(null);
+
+  const { width } = useWindowDimensions();
+
+  const getNumColumns = (screenWidth: number) => {
+    if (screenWidth >= 1024) return 4;
+    if (screenWidth >= 768) return 3;
+    return 2;
+  };
+
+  const numColumns = getNumColumns(width);
+  const GAP = 10;
+  const H_PADDING = 16;
+
+  const imageSize =
+    (width - H_PADDING * 2 - GAP * (numColumns - 1)) / numColumns;
 
   const feedQuery = useInfiniteQuery({
     queryKey: ["images"],
     queryFn: ({ pageParam = 1 }) => api.image.fetchImages(pageParam),
     initialPageParam: 1,
-    getNextPageParam: (lastPage, pages) => {
-      if (!lastPage || lastPage.length === 0) return undefined;
-      return pages.length + 1;
-    },
+    getNextPageParam: (lastPage, pages) =>
+      !lastPage || lastPage.length === 0 ? undefined : pages.length + 1,
   });
 
   const categoryQueryResult = useInfiniteQuery({
@@ -35,15 +48,12 @@ export default function HomeScreen() {
       api.image.fetchImagesFromCategory(categoryQuery, pageParam),
     initialPageParam: 1,
     enabled: !!categoryQuery.trim(),
-    getNextPageParam: (lastPage, pages) => {
-      if (!lastPage || lastPage.length === 0) return undefined;
-      return pages.length + 1;
-    },
+    getNextPageParam: (lastPage, pages) =>
+      !lastPage || lastPage.length === 0 ? undefined : pages.length + 1,
   });
 
   const feedData = feedQuery.data?.pages.flat() ?? [];
   const categoryData = categoryQueryResult.data?.pages.flat() ?? [];
-
   const listData = categoryQuery.trim() ? categoryData : feedData;
 
   const loadMore = () => {
@@ -55,7 +65,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <View style={{ marginBottom: 80 }}>
+    <View style={styles.container}>
       <CategoryComponent
         selectedCategory={categoryQuery || null}
         onSelectCategory={(id) => setCategoryQuery(id)}
@@ -64,20 +74,21 @@ export default function HomeScreen() {
       <FlatList
         showsVerticalScrollIndicator={false}
         data={listData}
-        numColumns={2}
+        numColumns={numColumns}
+        key={numColumns}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={{
-          gap: 10,
+          paddingHorizontal: H_PADDING,
           paddingBottom: 20,
-          alignItems: "center",
+          gap: GAP,
         }}
-        columnWrapperStyle={{}}
+        columnWrapperStyle={{
+          gap: GAP,
+        }}
         onEndReached={loadMore}
         onEndReachedThreshold={0.3}
         refreshing={feedQuery.isRefetching}
-        onRefresh={() => {
-          feedQuery.refetch();
-        }}
+        onRefresh={() => feedQuery.refetch()}
         ListFooterComponent={
           feedQuery.isFetchingNextPage ||
           categoryQueryResult.isFetchingNextPage ? (
@@ -86,13 +97,23 @@ export default function HomeScreen() {
         }
         renderItem={({ item }) => (
           <TouchableOpacity
+            activeOpacity={0.8}
             onPress={() => {
               setIsVisible(true);
               setImageUrl(item.largeImageURL);
               setImageId(item.id);
             }}
           >
-            <Image source={{ uri: item.largeImageURL }} style={styles.image} />
+            <Image
+              source={{ uri: item.largeImageURL }}
+              style={[
+                styles.image,
+                {
+                  width: imageSize,
+                  height: imageSize,
+                },
+              ]}
+            />
           </TouchableOpacity>
         )}
       />
@@ -108,10 +129,10 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    marginBottom: 80,
+  },
   image: {
-    height: 190,
-    width: 190,
     borderRadius: 12,
-    marginHorizontal: 5,
   },
 });

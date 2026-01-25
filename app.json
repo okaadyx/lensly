@@ -3,7 +3,7 @@
     "name": "Lensly",
     "slug": "lensly",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "lensly",
     "userInterfaceStyle": "automatic",
@@ -45,6 +45,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3ad233da-7749-408b-9ab7-92cb1a9295aa"
+      }
     }
   }
 }

@@ -11,6 +11,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  useWindowDimensions,
 } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -21,22 +22,33 @@ export default function SearchScreen() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageId, setImageId] = useState<string | null>(null);
 
+  const { width } = useWindowDimensions();
+
+  const getNumColumns = (screenWidth: number) => {
+    if (screenWidth >= 1024) return 4;
+    if (screenWidth >= 768) return 3;
+    return 2;
+  };
+
+  const numColumns = getNumColumns(width);
+  const GAP = 10;
+  const H_PADDING = 16;
+
+  const imageSize =
+    (width - H_PADDING * 2 - GAP * (numColumns - 1)) / numColumns;
+
   const searchQueryResult = useInfiniteQuery({
     queryKey: ["searchImages", query],
     queryFn: ({ pageParam = 1 }) => api.image.searchImages(query, pageParam),
     initialPageParam: 1,
     enabled: !!query.trim(),
-    getNextPageParam: (lastPage, pages) => {
-      if (!lastPage || lastPage.length === 0) return undefined;
-      return pages.length + 1;
-    },
+    getNextPageParam: (lastPage, pages) =>
+      !lastPage || lastPage.length === 0 ? undefined : pages.length + 1,
   });
 
   const searchData = searchQueryResult.data?.pages.flat() ?? [];
-
   const isSearching =
     searchQueryResult.isLoading || searchQueryResult.isFetching;
-
   const hasSearched = query.trim().length > 0 && !isSearching;
 
   if (!query.trim()) {
@@ -70,14 +82,21 @@ export default function SearchScreen() {
   }
 
   return (
-    <View style={{ marginBottom: 30, marginTop: 10 }}>
+    <View style={styles.screen}>
       <FlatList
         data={searchData}
-        numColumns={2}
+        numColumns={numColumns}
+        key={numColumns}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ gap: 10 }}
-        columnWrapperStyle={{ alignSelf: "center" }}
+        contentContainerStyle={{
+          paddingHorizontal: H_PADDING,
+          paddingBottom: 20,
+          gap: GAP,
+        }}
+        columnWrapperStyle={{
+          gap: GAP,
+        }}
         onEndReached={() =>
           searchQueryResult.hasNextPage && searchQueryResult.fetchNextPage()
         }
@@ -89,13 +108,23 @@ export default function SearchScreen() {
         }
         renderItem={({ item }) => (
           <TouchableOpacity
+            activeOpacity={0.85}
             onPress={() => {
               setIsVisible(true);
               setImageUrl(item.largeImageURL);
               setImageId(item.id);
             }}
           >
-            <Image source={{ uri: item.largeImageURL }} style={styles.image} />
+            <Image
+              source={{ uri: item.largeImageURL }}
+              style={[
+                styles.image,
+                {
+                  width: imageSize,
+                  height: imageSize,
+                },
+              ]}
+            />
           </TouchableOpacity>
         )}
       />
@@ -109,12 +138,15 @@ export default function SearchScreen() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
+  screen: {
+    marginBottom: 30,
+    marginTop: 10,
+  },
   image: {
-    height: 190,
-    width: 190,
     borderRadius: 12,
-    marginHorizontal: 5,
+    backgroundColor: "#eee",
   },
   container: {
     alignItems: "center",
