@@ -15,6 +15,25 @@
 - **🖼️ High-Res Viewer**: Tap any image to view it in full-screen detail with smooth modal transitions.
 - **📱 Cross-Platform**: Optimized for both Android and iOS devices.
 
+## 📱 App Preview
+
+| Onboarding | Authentication |
+|:---:|:---:|
+| <img src="assets/screenshots/splash.jpeg" width="250" /> <br> *Splash* | <img src="assets/screenshots/welcome.jpeg" width="250" /> <br> *Welcome* |
+| <img src="assets/screenshots/login.jpeg" width="250" /> <br> *Login* | <img src="assets/screenshots/signup.jpeg" width="250" /> <br> *Signup* |
+
+| Discovery & Search | Image Details |
+|:---:|:---:|
+| <img src="assets/screenshots/home.jpeg" width="250" /> <br> *Home Feed* | <img src="assets/screenshots/home%20category.jpeg" width="250" /> <br> *Categories* |
+| <img src="assets/screenshots/search%20.jpeg" width="250" /> <br> *Search* | <img src="assets/screenshots/search%20result%20.jpeg" width="250" /> <br> *Search Results* |
+| <img src="assets/screenshots/image%20screen.jpeg" width="250" /> <br> *Image Details* | <img src="assets/screenshots/image%20screen%202.jpeg" width="250" /> <br> *Full View* |
+
+| User Profile |
+|:---:|
+| <img src="assets/screenshots/wishlist.jpeg" width="250" /> <br> *Wishlist* |
+| <img src="assets/screenshots/account%20.jpeg" width="250" /> <br> *Profile* |
+| <img src="assets/screenshots/edit%20profile.jpeg" width="250" /> <br> *Edit Profile* |
+
 ## 🛠️ Tech Stack
 
 This project uses a modern, robust stack designed for performance and developer experience:
