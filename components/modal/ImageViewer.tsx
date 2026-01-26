@@ -5,7 +5,9 @@ import * as IntentLauncher from "expo-intent-launcher";
 import * as MediaLibrary from "expo-media-library";
 import * as Sharing from "expo-sharing";
 
-import React from "react";
+import { useFocusEffect } from "expo-router";
+import * as ScreenOrientation from "expo-screen-orientation";
+import React, { useCallback } from "react";
 import {
   Alert,
   Platform,
@@ -45,6 +47,16 @@ export default function ImageViewer({
 }) {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
+
+  useFocusEffect(
+    useCallback(() => {
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+
+      return () => {
+        ScreenOrientation.unlockAsync();
+      };
+    }, []),
+  );
 
   const handleSetWallpaper = async (type?: WallpaperType) => {
     if (Platform.OS !== "android") {
