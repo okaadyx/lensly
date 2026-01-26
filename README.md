@@ -90,16 +90,22 @@ lensly/
 ├── app/                 # Screens and Navigation (Expo Router)
 │   ├── auth/            # Authentication screens (Login/Signup)
 │   ├── home/            # Main feed and dashboard
+│   ├── screens/         # Additional screens
 │   ├── _layout.tsx      # Root layout configuration
 │   └── index.tsx        # Entry point
-├── components/          # Reusable UI components (Buttons, Cards, Inputs)
+├── components/          # Reusable UI components
+│   ├── core/            # Core UI elements (Buttons, Inputs)
+│   ├── header/          # Header components
+│   ├── modal/           # Modal components
+│   └── ui/              # General UI components
 ├── services/            # API and Logic references
 │   ├── imageService/    # Pixabay API integration
-│   ├── UserService/     # User data management
-│   └── wishlist/        # Wishlist service logic
+│   └── UserService/     # User data management
 ├── store/               # Redux store and slices
-├── assets/              # Static images and fonts
-└── constants/           # App-wide constants (Colors, Themes)
+├── assets/              # Static images, fonts, and screenshots
+├── constants/           # App-wide constants (Colors, Themes)
+├── hooks/               # Custom React hooks
+└── lib/                 # Utility libraries
 ```
 
 ## 🤝 Contributing
