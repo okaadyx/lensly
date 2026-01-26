@@ -19,20 +19,19 @@
 
 | Onboarding | Authentication |
 |:---:|:---:|
-| <img src="assets/screenshots/splash.jpeg" width="250" /> <br> *Splash* | <img src="assets/screenshots/welcome.jpeg" width="250" /> <br> *Welcome* |
-| <img src="assets/screenshots/login.jpeg" width="250" /> <br> *Login* | <img src="assets/screenshots/signup.jpeg" width="250" /> <br> *Signup* |
+| <img src="assets/screenshots/splash.jpeg" width="100%" /> <br> *Splash* | <img src="assets/screenshots/welcome.jpeg" width="100%" /> <br> *Welcome* |
+| <img src="assets/screenshots/login.jpeg" width="100%" /> <br> *Login* | <img src="assets/screenshots/signup.jpeg" width="100%" /> <br> *Signup* |
 
-| Discovery & Search | Image Details |
+| Discovery | Search |
 |:---:|:---:|
-| <img src="assets/screenshots/home.jpeg" width="250" /> <br> *Home Feed* | <img src="assets/screenshots/home%20category.jpeg" width="250" /> <br> *Categories* |
-| <img src="assets/screenshots/search%20.jpeg" width="250" /> <br> *Search* | <img src="assets/screenshots/search%20result%20.jpeg" width="250" /> <br> *Search Results* |
-| <img src="assets/screenshots/image%20screen.jpeg" width="250" /> <br> *Image Details* | <img src="assets/screenshots/image%20screen%202.jpeg" width="250" /> <br> *Full View* |
+| <img src="assets/screenshots/home.jpeg" width="100%" /> <br> *Home Feed* | <img src="assets/screenshots/home%20category.jpeg" width="100%" /> <br> *Categories* |
+| <img src="assets/screenshots/search%20.jpeg" width="100%" /> <br> *Search* | <img src="assets/screenshots/search%20result%20.jpeg" width="100%" /> <br> *Search Results* |
 
-| User Profile |
-|:---:|
-| <img src="assets/screenshots/wishlist.jpeg" width="250" /> <br> *Wishlist* |
-| <img src="assets/screenshots/account%20.jpeg" width="250" /> <br> *Profile* |
-| <img src="assets/screenshots/edit%20profile.jpeg" width="250" /> <br> *Edit Profile* |
+| Details | Profile |
+|:---:|:---:|
+| <img src="assets/screenshots/image%20screen.jpeg" width="100%" /> <br> *Image Details* | <img src="assets/screenshots/image%20screen%202.jpeg" width="100%" /> <br> *Full View* |
+| <img src="assets/screenshots/wishlist.jpeg" width="100%" /> <br> *Wishlist* | <img src="assets/screenshots/account%20.jpeg" width="100%" /> <br> *Profile* |
+| <img src="assets/screenshots/edit%20profile.jpeg" width="100%" /> <br> *Edit Profile* | |
 
 ## 🛠️ Tech Stack
 
