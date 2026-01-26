@@ -1,5 +1,6 @@
 import CategoryComponent from "@/components/CategoryComponent";
 import ImageViewer from "@/components/modal/ImageViewer";
+import useInternetStatus from "@/components/useInternetStatus";
 import { api } from "@/services/imageService";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -8,9 +9,10 @@ import {
   FlatList,
   Image,
   StyleSheet,
+  Text,
   TouchableOpacity,
-  View,
   useWindowDimensions,
+  View,
 } from "react-native";
 
 export default function HomeScreen() {
@@ -18,6 +20,7 @@ export default function HomeScreen() {
   const [isVisible, setIsVisible] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageId, setImageId] = useState<string | null>(null);
+  const isOnline = useInternetStatus();
 
   const { width } = useWindowDimensions();
 
@@ -70,7 +73,11 @@ export default function HomeScreen() {
         selectedCategory={categoryQuery || null}
         onSelectCategory={(id) => setCategoryQuery(id)}
       />
-
+      {!isOnline && (
+        <View style={styles.offlineBanner}>
+          <Text style={styles.offlineText}>You’re offline</Text>
+        </View>
+      )}
       <FlatList
         showsVerticalScrollIndicator={false}
         data={listData}
@@ -134,5 +141,16 @@ const styles = StyleSheet.create({
   },
   image: {
     borderRadius: 12,
+  },
+  offlineBanner: {
+    backgroundColor: "#1d6ca7",
+    padding: 8,
+    marginBottom: 2,
+    width: "100%",
+    alignItems: "center",
+  },
+  offlineText: {
+    color: "#e4e4e4",
+    fontWeight: "600",
   },
 });
