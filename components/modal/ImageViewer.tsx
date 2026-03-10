@@ -93,8 +93,8 @@ export default function ImageViewer({
         imageUrl: url,
       });
 
-      if (response?.status === "success") {
-        Toast(response?.message);
+      if (response?.success || response?.status === "success" || response?.message) {
+        Toast(response?.message || "Added to wishlist");
       } else {
         Alert.alert("Error", "Something went wrong");
       }
@@ -188,7 +188,7 @@ export default function ImageViewer({
                   styles.actionBtn,
                   { backgroundColor: theme.actionBtnBg },
                 ]}
-                onPress={handleSetWallpaper}
+                onPress={() => handleSetWallpaper()}
               >
                 <Ionicons name="image" size={24} color={theme.icon} />
               </TouchableOpacity>

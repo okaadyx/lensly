@@ -15,7 +15,7 @@ export default class User {
 
   async getUser() {
     const headers = await this.getAuthHeader();
-    const response = await this.client.get("/users", {
+    const response = await this.client.get("/users/profile", {
       headers,
     });
     return response.data;
@@ -38,7 +38,7 @@ export default class User {
 
   async updateUser(data: any) {
     const headers = await this.getAuthHeader();
-    const response = await this.client.put("/users/update", data, {
+    const response = await this.client.post("/users/profile", data, {
       headers,
     });
     return response.data;

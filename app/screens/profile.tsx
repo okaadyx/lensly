@@ -36,7 +36,7 @@ export default function ProfileScreen() {
         return;
       }
       const response = await userApi.user.updateUser({ name, email });
-      if (response.status === "success") {
+      if (response.success || response.status === "success") {
         Toast("Profile Updated");
 
         queryClient.invalidateQueries({

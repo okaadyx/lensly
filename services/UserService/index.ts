@@ -8,7 +8,7 @@ class Api {
 
   constructor() {
     this.axiosClient = axios.create({
-      baseURL: "https://quick-pic-one.vercel.app/",
+      baseURL: "https://lensly-api.vercel.app/",
     });
     this.user = new User(this.axiosClient);
     this.wishlist = new WishlistApi(this.axiosClient);

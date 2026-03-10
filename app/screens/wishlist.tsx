@@ -31,7 +31,7 @@ export default function WishlistScreen() {
     queryFn: () => userApi.wishlist.getWishlist(),
   });
 
-  const wishlistImages = data?.wishlist?.images ?? [];
+  const wishlistImages = data?.wishlist?.images ?? data?.images ?? [];
 
   const removeMutation = useMutation({
     mutationFn: (imageId: string) => userApi.wishlist.removeItem(imageId),
@@ -53,6 +53,14 @@ export default function WishlistScreen() {
   }
 
   if (isError) {
+    const error = (data as any)?.response?.status;
+    if (error === 404) {
+      return (
+        <View style={styles.center}>
+          <Text style={styles.emptyText}>Your wishlist is empty</Text>
+        </View>
+      );
+    }
     return (
       <View style={styles.center}>
         <Text style={styles.text}>Failed to load wishlist</Text>
@@ -72,7 +80,7 @@ export default function WishlistScreen() {
 
           <FlatList
             data={wishlistImages}
-            keyExtractor={(item) => item._id}
+            keyExtractor={(item) => item.id}
             numColumns={2}
             columnWrapperStyle={styles.row}
             showsVerticalScrollIndicator={false}
