@@ -11,7 +11,7 @@
 - **🔐 User Authentication**: Secure Login and Signup flows to personalize the experience.
 - **🌍 Discover**: Browse a curated feed of trending and editor's choice photos.
 - **🔍 Powerful Search**: Instantly find what you're looking for with a robust search implementation (powered by Redux).
-- **❤️ Wishlist**: Save your favorite images to a local wishlist for quick access later.
+- **❤️ Wishlist**: Save your favorite images to a personal wishlist.
 - **🖼️ High-Res Viewer**: Tap any image to view it in full-screen detail with smooth modal transitions.
 - **📱 Cross-Platform**: Optimized for both Android and iOS devices.
 
@@ -37,11 +37,12 @@
 
 This project uses a modern, robust stack designed for performance and developer experience:
 
-- **Core Framework**: [React Native](https://reactnative.dev/) (via [Expo SDK 52](https://expo.dev/))
+- **Core Framework**: [React Native 0.81](https://reactnative.dev/) (via [Expo SDK 54](https://expo.dev/))
 - **Routing**: [Expo Router](https://docs.expo.dev/router/introduction/) (File-based routing)
 - **State Management**: [Redux Toolkit](https://redux-toolkit.js.org/)
 - **Data Fetching**: [React Query](https://tanstack.com/query/latest) & [Axios](https://axios-http.com/)
-- **Styling**: React Native StyleSheet & Vector Icons
+- **Backend API**: Hosted on Vercel ([lensly-api.vercel.app](https://lensly-api.vercel.app/))
+- **Styling**: React Native StyleSheet & NativeWind (if applicable) / Vector Icons
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 
 ## 🚀 Getting Started
@@ -88,11 +89,13 @@ Here's a quick look at the top-level directory structure:
 ```
 lensly/
 ├── app/                 # Screens and Navigation (Expo Router)
+│   ├── (tabs)/          # Main tab navigation
 │   ├── auth/            # Authentication screens (Login/Signup)
 │   ├── home/            # Main feed and dashboard
 │   ├── screens/         # Additional screens
+│   ├── modal.tsx        # Detail view modal
 │   ├── _layout.tsx      # Root layout configuration
-│   └── index.tsx        # Entry point
+│   └── index.tsx        # Onboarding/Entry point
 ├── components/          # Reusable UI components
 │   ├── core/            # Core UI elements (Buttons, Inputs)
 │   ├── header/          # Header components
@@ -100,7 +103,7 @@ lensly/
 │   └── ui/              # General UI components
 ├── services/            # API and Logic references
 │   ├── imageService/    # Pixabay API integration
-│   └── UserService/     # User data management
+│   └── UserService/     # User data & Wishlist management
 ├── store/               # Redux store and slices
 ├── assets/              # Static images, fonts, and screenshots
 ├── constants/           # App-wide constants (Colors, Themes)
