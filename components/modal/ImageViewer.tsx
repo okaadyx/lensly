@@ -5,7 +5,9 @@ import * as IntentLauncher from "expo-intent-launcher";
 import * as MediaLibrary from "expo-media-library";
 import * as Sharing from "expo-sharing";
 
-import React from "react";
+import { queryClient } from "@/lib/QueryClient";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Platform,
@@ -45,6 +47,22 @@ export default function ImageViewer({
 }) {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
+  const [liked, setLiked] = useState<boolean>(false);
+  const { data } = useQuery({
+    queryKey: ["wishlist"],
+    queryFn: () => userApi.wishlist.getWishlist(),
+  });
+
+  const existInWishlist = useMemo(
+    () => data?.wishlist?.images?.some((item: any) => item.imageId === imageId),
+    [data, imageId],
+  );
+
+  useEffect(() => {
+    if (existInWishlist !== undefined) {
+      setLiked(existInWishlist);
+    }
+  }, [existInWishlist]);
 
   const handleSetWallpaper = async (type?: WallpaperType) => {
     if (Platform.OS !== "android") {
@@ -86,22 +104,64 @@ export default function ImageViewer({
     }
   };
 
-  const onWishlist = async () => {
-    try {
-      const response = await userApi.wishlist.addItem({
-        imageId,
-        imageUrl: url,
+  const wishlistMutation = useMutation({
+    mutationFn: async ({ type }: { type: "add" | "remove" }) => {
+      if (type === "add") {
+        return userApi.wishlist.addItem({
+          imageId,
+          imageUrl: url,
+        });
+      } else {
+        return userApi.wishlist.removeItem(imageId);
+      }
+    },
+
+    // OPTIMISTIC UPDATE
+    onMutate: async ({ type }) => {
+      await queryClient.cancelQueries({ queryKey: ["wishlist"] });
+
+      const previousData = queryClient.getQueryData(["wishlist"]);
+
+      queryClient.setQueryData(["wishlist"], (old: any) => {
+        if (!old) return old;
+
+        let updatedImages = [...old.wishlist.images];
+
+        if (type === "add") {
+          updatedImages.push({ imageId, imageUrl: url });
+        } else {
+          updatedImages = updatedImages.filter(
+            (item: any) => item.imageId !== imageId,
+          );
+        }
+
+        return {
+          ...old,
+          wishlist: {
+            ...old.wishlist,
+            images: updatedImages,
+          },
+        };
       });
 
-      if (response?.success || response?.status === "success" || response?.message) {
-        Toast(response?.message || "Added to wishlist");
-      } else {
-        Alert.alert("Error", "Something went wrong");
-      }
-    } catch {
-      Toast("Already Exist in Wishlist");
-    }
-  };
+      // update local UI instantly
+      setLiked(type === "add");
+
+      return { previousData };
+    },
+
+    // Rollback if failed
+    onError: (err, variables, context) => {
+      queryClient.setQueryData(["wishlist"], context?.previousData);
+      setLiked(!(variables.type === "add")); // revert UI
+      Alert.alert("Error", "Something went wrong");
+    },
+
+    // Sync with server
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+    },
+  });
 
   const onSharing = async () => {
     try {
@@ -154,9 +214,18 @@ export default function ImageViewer({
                   styles.actionBtn,
                   { backgroundColor: theme.actionBtnBg },
                 ]}
-                onPress={onWishlist}
+                disabled={wishlistMutation.isPending}
+                onPress={() => {
+                  wishlistMutation.mutate({
+                    type: liked ? "remove" : "add",
+                  });
+                }}
               >
-                <MaterialIcons name="favorite" size={26} color={theme.icon} />
+                <MaterialIcons
+                  name="favorite"
+                  size={26}
+                  color={liked ? "red" : theme.icon}
+                />
               </TouchableOpacity>
 
               <TouchableOpacity

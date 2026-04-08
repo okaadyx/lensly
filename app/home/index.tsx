@@ -1,9 +1,11 @@
 import CategoryComponent from "@/components/CategoryComponent";
 import ImageViewer from "@/components/modal/ImageViewer";
 import useInternetStatus from "@/components/useInternetStatus";
+import { queryClient } from "@/lib/QueryClient";
 import { api } from "@/services/imageService";
+import { userApi } from "@/services/UserService";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -66,6 +68,13 @@ export default function HomeScreen() {
       feedQuery.hasNextPage && feedQuery.fetchNextPage();
     }
   };
+
+  useEffect(() => {
+    queryClient.prefetchQuery({
+      queryKey: ["wishlist"],
+      queryFn: () => userApi.wishlist.getWishlist(),
+    });
+  });
 
   return (
     <View style={styles.container}>
