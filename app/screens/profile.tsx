@@ -15,7 +15,7 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import { string, z } from "zod";
+import { z } from "zod";
 
 export default function ProfileScreen() {
   const theme = useColorScheme();
@@ -24,14 +24,20 @@ export default function ProfileScreen() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+
   const { data } = useQuery({
     queryKey: ["user"],
     queryFn: () => userApi.user.getUser(),
   });
 
   const updateDetails = z.object({
-    name: string().min(1, "Name is Required"),
-    email: string().email("Invalid Email"),
+    name: z.string().trim().min(1, "Full name is required."),
+
+    email: z
+      .string()
+      .trim()
+      .min(1, "Email is required.")
+      .email("Enter a valid email address."),
   });
 
   const handleUpdate = async () => {
