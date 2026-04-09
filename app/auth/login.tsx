@@ -21,15 +21,15 @@ export default function LoginScreen() {
   const scheme = useColorScheme();
   const isDark = scheme === "dark";
 
-  const loginDetails = z.object({
-    email: z.string().email("Invalid Email"),
-    password: z.string().min(8, "Minimum 8 Characters"),
-  });
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const loginDetails = z.object({
+    email: z.string().email("Invalid Email"),
+    password: z.string().min(8, "Minimum 8 Characters"),
+  });
 
   const handleLogin = async () => {
     if (loading) return;

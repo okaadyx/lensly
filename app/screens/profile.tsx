@@ -15,6 +15,7 @@ import {
   useColorScheme,
   View,
 } from "react-native";
+import { string, z } from "zod";
 
 export default function ProfileScreen() {
   const theme = useColorScheme();
@@ -28,13 +29,26 @@ export default function ProfileScreen() {
     queryFn: () => userApi.user.getUser(),
   });
 
+  const updateDetails = z.object({
+    name: string().min(1, "Name is Required"),
+    email: string().email("Invalid Email"),
+  });
+
   const handleUpdate = async () => {
     setIsUpdating(true);
+
+    const result = updateDetails.safeParse({
+      name,
+      email,
+    });
+
+    if (!result.success) {
+      const firstError = result.error.issues[0];
+      Alert.alert("Invalid Update ", firstError?.message || "Invalid Input");
+      return;
+    }
+
     try {
-      if (!name.trim() || !email.trim()) {
-        Alert.alert("Information Required", "Name and Email both is required ");
-        return;
-      }
       const response = await userApi.user.updateUser({ name, email });
       if (response.success || response.status === "success") {
         Toast("Profile Updated");

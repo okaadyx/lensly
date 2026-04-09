@@ -14,6 +14,8 @@ import {
   View,
 } from "react-native";
 
+import { z } from "zod";
+
 export default function SignupScreen() {
   const router = useRouter();
   const scheme = useColorScheme();
@@ -25,20 +27,27 @@ export default function SignupScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const signupDetails = z.object({
+    name: z.string().min(1, "Name is required"),
+    email: z.string().email("Invalid Email"),
+    password: z.string().min(8, "Minimum 8 Characters"),
+  });
+
   const handleSignup = async () => {
     if (loading) return;
 
+    const result = signupDetails.safeParse({
+      name,
+      email,
+      password,
+    });
+    if (!result.success) {
+      const firstError = result.error.issues[0];
+      Alert.alert("Validation Error", firstError?.message || "Invalid input");
+      return;
+    }
     try {
-      if (!name.trim() || !email.trim() || !password.trim()) {
-        Alert.alert(
-          "Missing Information",
-          "Please enter name, email, and password.",
-        );
-        return;
-      }
-
       setLoading(true);
-
       const response = await userApi.user.signup({ name, email, password });
 
       if (response?.token) {
