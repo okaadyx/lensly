@@ -14,11 +14,17 @@ import {
   useColorScheme,
   View,
 } from "react-native";
+import { z } from "zod";
 
 export default function LoginScreen() {
   const router = useRouter();
   const scheme = useColorScheme();
   const isDark = scheme === "dark";
+
+  const loginDetails = z.object({
+    email: z.string().email("Invalid Email"),
+    password: z.string().min(8, "Minimum 8 Characters"),
+  });
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,17 +34,19 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     if (loading) return;
 
+    const result = loginDetails.safeParse({
+      email,
+      password,
+    });
+
+    if (!result.success) {
+      const firstError = result.error?.issues[0];
+      Alert.alert("Validation Error", firstError?.message || "Invalid input");
+      return;
+    }
+
     try {
-      if (!email.trim() || !password.trim()) {
-        Alert.alert(
-          "Missing Information",
-          "Please enter both email and password.",
-        );
-        return;
-      }
-
       setLoading(true);
-
       const response = await userApi.user.login({ email, password });
 
       if (response?.token) {
